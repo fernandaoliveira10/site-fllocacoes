@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+﻿import { PrismaClient } from "@prisma/client";
 import { hashSync } from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -31,36 +31,54 @@ async function main() {
       category: "PLATAFORMA_360",
       extraPricePerHour: 5000,
       media: {
-        create: {
-          url: "/images/produtos/plataforma-360.jpg",
-          alt: "Plataforma 360",
-        },
+        create: [
+          {
+            url: "/images/produtos/plataforma-360.jpg",
+            alt: "Plataforma 360",
+          },
+          {
+            url: "/images/plataforma_v.mp4",
+            alt: "Plataforma 360 em vídeo",
+            type: "VIDEO",
+          },
+          {
+            url: "/images/plataforma_v2.mp4",
+            alt: "Plataforma 360 em vídeo 2",
+            type: "VIDEO",
+          },
+        ],
       },
       priceTiers: {
         create: [
           { durationHours: 2, price: 32000, label: "2 horas" },
-          { durationHours: 3, price: 35000, label: "3 horas" },
+          { durationHours: 3, price: 37000, label: "3 horas" },
         ],
       },
     },
   });
-
   const camaElastica = await prisma.product.create({
     data: {
-      name: "Cama Elástica de 3 Metros",
+      name: "Cama ElÃ¡stica de 3 Metros",
       description: "Monitor, montagem e desmontagem inclusos. Equipamento higienizado.",
       category: "CAMA_ELASTICA",
       extraPricePerHour: 5000,
       media: {
-        create: {
+        create: [
+        {
           url: "/images/produtos/cama-elastica.jpg",
-          alt: "Cama Elástica 3m",
+          alt: "Cama ElÃ¡stica 3m",
         },
+        {
+          url: "/images/camaelastica_v.mp4",
+          alt: "Cama Elástica em vídeo",
+          type: "VIDEO",
+        }
+      ],
       },
       priceTiers: {
         create: [
           { durationHours: 3, price: 17000, label: "3 horas" },
-          { durationHours: 5, price: 20000, label: "5 horas" },
+          { durationHours: 5, price: 20000, label: "5 horas sem monitor" },
         ],
       },
     },
@@ -73,10 +91,28 @@ async function main() {
       category: "FOTOGRAFIA",
       extraPricePerHour: 5000,
       media: {
-        create: {
+        create: [
+        {
           url: "/images/produtos/fotografia.jpg",
           alt: "Fotografia Profissional",
         },
+                {
+          url: "/images/produtos/foto1.jpeg",
+          alt: "Fotografia Profissional",
+        },
+        {
+          url: "/images/produtos/foto2.jpeg",
+          alt: "Fotografia Profissional",
+        },
+        {
+          url: "/images/produtos/foto3.jpeg",
+          alt: "Fotografia Profissional",
+        },
+        {
+          url: "/images/produtos/foto4.jpeg",
+          alt: "Fotografia Profissional",
+        },
+      ]
       },
       priceTiers: {
         create: [
@@ -90,7 +126,7 @@ async function main() {
   await prisma.product.create({
     data: {
       name: "Piscina de Bolinha",
-      description: "Piscina de bolinha infantil com proteção e monitoramento.",
+      description: "Piscina de bolinha infantil com proteÃ§Ã£o e monitoramento.",
       category: "PISCINA_BOLINHA",
       isOutsourced: true,
       priceConfirmed: false,
@@ -123,7 +159,7 @@ async function main() {
   await prisma.combo.create({
     data: {
       name: "Combo 1",
-      description: "Plataforma 360° (2h) + Cama Elástica (3h)",
+      description: "Plataforma 360Â° (2h) + Cama ElÃ¡stica (3h)",
       totalPrice: 43100,
       durationHours: 3,
       discountPct: 12,
@@ -139,7 +175,7 @@ async function main() {
   await prisma.combo.create({
     data: {
       name: "Combo 2",
-      description: "Plataforma 360° (3h) + Cama Elástica (5h)",
+      description: "Plataforma 360Â° (3h) + Cama ElÃ¡stica (5h)",
       totalPrice: 48400,
       durationHours: 5,
       discountPct: 12,
@@ -155,7 +191,7 @@ async function main() {
   await prisma.combo.create({
     data: {
       name: "Combo 3",
-      description: "Plataforma 360° (2h) + Fotografia (2h)",
+      description: "Plataforma 360Â° (2h) + Fotografia (2h)",
       totalPrice: 54600,
       durationHours: 2,
       discountPct: 12,
@@ -171,7 +207,7 @@ async function main() {
   await prisma.combo.create({
     data: {
       name: "Combo 4",
-      description: "Plataforma 360° (3h) + Fotografia (3h)",
+      description: "Plataforma 360Â° (3h) + Fotografia (3h)",
       totalPrice: 61600,
       durationHours: 3,
       discountPct: 12,
@@ -187,7 +223,7 @@ async function main() {
   await prisma.combo.create({
     data: {
       name: "Combo 7",
-      description: "Cama Elástica (3h) + Fotografia (2h)",
+      description: "Cama ElÃ¡stica (3h) + Fotografia (2h)",
       totalPrice: 41400,
       durationHours: 3,
       discountPct: 12,
@@ -203,7 +239,7 @@ async function main() {
   await prisma.combo.create({
     data: {
       name: "Combo 8",
-      description: "Cama Elástica (5h) + Fotografia (3h)",
+      description: "Cama ElÃ¡stica (5h) + Fotografia (3h)",
       totalPrice: 48400,
       durationHours: 5,
       discountPct: 12,
@@ -220,7 +256,7 @@ async function main() {
   await prisma.combo.create({
     data: {
       name: "Combo 5",
-      description: "Plataforma 360° (2h) + Fotografia (2h) + Cama Elástica (3h)",
+      description: "Plataforma 360Â° (2h) + Fotografia (2h) + Cama ElÃ¡stica (3h)",
       totalPrice: 67200,
       durationHours: 3,
       discountPct: 15,
@@ -237,7 +273,7 @@ async function main() {
   await prisma.combo.create({
     data: {
       name: "Combo 6",
-      description: "Plataforma 360° (3h) + Fotografia (3h) + Cama Elástica (5h)",
+      description: "Plataforma 360Â° (3h) + Fotografia (3h) + Cama ElÃ¡stica (5h)",
       totalPrice: 76500,
       durationHours: 5,
       discountPct: 15,
@@ -254,7 +290,7 @@ async function main() {
   await prisma.combo.create({
     data: {
       name: "Combo Personalizado",
-      description: "Monte seu pacote e ganhe condições especiais. Consulte-nos!",
+      description: "Monte seu pacote e ganhe condiÃ§Ãµes especiais. Consulte-nos!",
       totalPrice: 0,
       durationHours: 0,
       isActive: true,
@@ -284,7 +320,7 @@ async function main() {
         status: "CONFIRMED",
         eventType: "aniversario",
         eventAddress: "Rua das Flores, 123 - Jardim Paulista",
-        eventCity: "São Paulo",
+        eventCity: "SÃ£o Paulo",
         hasTransportFee: true,
         items: {
           create: combo1.items.map((item) => ({
@@ -309,3 +345,5 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+

@@ -1,7 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { productCategoryLabels, type Product, type ProductCategory } from "@/lib/types";
 
@@ -13,12 +14,27 @@ const CATEGORIES: ProductCategory[] = [
   "MESAS_CADEIRAS",
 ];
 
+const VIDEO_PATTERN = /\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/i;
+
 interface ProductForm {
   name: string;
   description: string;
   category: ProductCategory;
   isOutsourced: boolean;
   priceConfirmed: boolean;
+  mediaUrls: string;
+}
+
+function parseMediaUrls(value: string, productName: string) {
+  return value
+    .split(/\r?\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((url, index) => ({
+      url,
+      alt: productName ? `${productName} ${index + 1}` : `Imagem ${index + 1}`,
+      type: VIDEO_PATTERN.test(url) ? "VIDEO" : "IMAGE",
+    }));
 }
 
 export function ProductManager({ initialProducts }: { initialProducts: Product[] }) {
@@ -30,26 +46,41 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
     category: "PLATAFORMA_360",
     isOutsourced: false,
     priceConfirmed: true,
+    mediaUrls: "",
   });
+
+  const resetForm = () => {
+    setForm({
+      name: "",
+      description: "",
+      category: "PLATAFORMA_360",
+      isOutsourced: false,
+      priceConfirmed: true,
+      mediaUrls: "",
+    });
+  };
 
   const handleCreate = async () => {
     try {
+      const payload = {
+        name: form.name,
+        description: form.description,
+        category: form.category,
+        isOutsourced: form.isOutsourced,
+        priceConfirmed: form.priceConfirmed,
+        media: parseMediaUrls(form.mediaUrls, form.name),
+      };
+
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
         const created = await res.json();
         setProducts((prev) => [created, ...prev]);
         setShowForm(false);
-        setForm({
-          name: "",
-          description: "",
-          category: "PLATAFORMA_360",
-          isOutsourced: false,
-          priceConfirmed: true,
-        });
+        resetForm();
       }
     } catch {}
   };
@@ -58,7 +89,7 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
     try {
       const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
       if (res.ok) {
-        setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, isActive: false } : p)));
+        setProducts((prev) => prev.map((product) => (product.id === id ? { ...product, isActive: false } : product)));
       }
     } catch {}
   };
@@ -82,9 +113,16 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
             className="w-full rounded-xl border border-fl-gray-200 bg-fl-gray-50 px-4 py-2.5 text-sm text-fl-gray-900 outline-none focus:border-fl-blue"
           />
           <input
-            placeholder="Descrição"
+            placeholder="Descricao"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
+            className="w-full rounded-xl border border-fl-gray-200 bg-fl-gray-50 px-4 py-2.5 text-sm text-fl-gray-900 outline-none focus:border-fl-blue"
+          />
+          <textarea
+            placeholder="Imagens ou videos do produto, uma URL por linha"
+            value={form.mediaUrls}
+            onChange={(e) => setForm({ ...form, mediaUrls: e.target.value })}
+            rows={4}
             className="w-full rounded-xl border border-fl-gray-200 bg-fl-gray-50 px-4 py-2.5 text-sm text-fl-gray-900 outline-none focus:border-fl-blue"
           />
           <select
@@ -92,9 +130,9 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
             onChange={(e) => setForm({ ...form, category: e.target.value as ProductCategory })}
             className="w-full rounded-xl border border-fl-gray-200 bg-fl-gray-50 px-4 py-2.5 text-sm text-fl-gray-900 outline-none focus:border-fl-blue"
           >
-            {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {productCategoryLabels[cat]}
+            {CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {productCategoryLabels[category]}
               </option>
             ))}
           </select>
@@ -129,26 +167,23 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
           key={product.id}
           className={cn(
             "flex items-center justify-between rounded-2xl border p-4",
-            product.isActive
-              ? "border-fl-gray-200 bg-white shadow-soft"
-              : "border-fl-gray-100 bg-fl-gray-50 opacity-50",
+            product.isActive ? "border-fl-gray-200 bg-white shadow-soft" : "border-fl-gray-100 bg-fl-gray-50 opacity-50",
           )}
         >
           <div>
             <p className="font-medium text-fl-blue-dark">{product.name}</p>
             <p className="text-xs text-fl-gray-500">{productCategoryLabels[product.category]}</p>
             <p className="text-sm text-fl-gray-600">
-              {product.priceConfirmed ? "Preço confirmado" : "Sob consulta"}
+              {product.priceConfirmed ? "Preco confirmado" : "Sob consulta"}
               {product.isOutsourced && " · Terceirizado"}
             </p>
+            <p className="text-xs text-fl-gray-500">{product.media.length} imagem(ns)</p>
           </div>
           <div className="flex items-center gap-2">
             <span
               className={cn(
                 "rounded-xl border px-3 py-1.5 text-xs font-medium",
-                product.isActive
-                  ? "border-green-200 bg-green-50 text-green-700"
-                  : "border-fl-gray-200 text-fl-gray-500",
+                product.isActive ? "border-green-200 bg-green-50 text-green-700" : "border-fl-gray-200 text-fl-gray-500",
               )}
             >
               {product.isActive ? "Ativo" : "Inativo"}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
@@ -193,19 +193,6 @@ export function BookingExperience() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 rounded-2xl border border-fl-gray-200 bg-white p-6 shadow-soft-lg sm:p-10">
-      <div className="rounded-2xl border border-fl-blue/20 bg-fl-blue/5 p-5">
-        <div className="flex items-start gap-3">
-          <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fl-blue/10 text-fl-blue">
-            <Sparkles className="h-4 w-4" />
-          </span>
-          <div>
-            <p className="text-sm font-semibold text-fl-blue-dark">Orçamento rápido sem banco</p>
-            <p className="mt-1 text-sm leading-6 text-fl-gray-600">
-              Você vê o valor parcial dos produtos selecionados. A taxa de deslocamento fica sob consulta e o valor final é confirmado depois do envio.
-            </p>
-          </div>
-        </div>
-      </div>
 
       <div className="grid gap-8 lg:grid-cols-[1.35fr_0.95fr]">
         <div className="space-y-6">
@@ -224,8 +211,19 @@ export function BookingExperience() {
                         <h3 className="font-display text-lg font-bold text-fl-blue-dark">{product.name}</h3>
                         <p className="text-sm text-fl-gray-500">{product.category.replace(/_/g, " ")}</p>
                       </div>
-                      <button type="button" onClick={() => toggleProduct(product)} className={cn("flex h-7 w-7 items-center justify-center rounded-lg border text-sm transition", isSelected ? "border-green-400 bg-green-50 text-green-600" : "border-fl-gray-300 text-fl-gray-500 hover:border-fl-blue hover:text-fl-blue")}>
+                      <button
+                        type="button"
+                        onClick={() => toggleProduct(product)}
+                        className={cn(
+                          "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transition",
+                          isSelected
+                            ? "border-green-400 bg-green-50 text-green-700"
+                            : "border-fl-blue bg-fl-blue text-white shadow-fl-blue/20 hover:bg-fl-blue-dark",
+                        )}
+                        aria-label={isSelected ? `Produto ${product.name} adicionado` : `Adicionar ${product.name}`}
+                      >
                         {isSelected ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                        <span>{isSelected ? "Adicionado" : "Adicionar"}</span>
                       </button>
                     </div>
 
@@ -351,6 +349,9 @@ export function BookingExperience() {
     </form>
   );
 }
+
+
+
 
 
 

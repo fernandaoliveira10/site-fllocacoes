@@ -3,16 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, MessageCircleMore, X } from "lucide-react";
+import { Instagram, Menu, MessageCircleMore, X } from "lucide-react";
 
 import { flWhatsAppMessage, flWhatsAppNumber } from "@/lib/constants";
 import { buildWhatsAppUrl } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Início" },
-  { href: "/produtos", label: "Produtos" },
-  { href: "/#como-funciona", label: "Como funciona" },
-  { href: "/#contato", label: "Contato" },
+  { href: "/produtos", label: "Início" },
+  { href: "/orcamentos", label: "Criar Orçamento" },
+  { href: "/produtos#contato", label: "Contato" },
 ];
 
 export function Header() {
@@ -22,7 +21,7 @@ export function Header() {
   return (
     <header className="fixed left-0 right-0 top-0 z-50 border-b border-fl-gray-200/60 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/produtos" className="flex items-center gap-2">
           <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white shadow-soft">
             <Image src="/images/logo/logo-fl.png" alt="F&L Locações" width={40} height={40} className="h-full w-full object-contain" />
           </span>
@@ -40,25 +39,35 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 sm:flex">
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-lg border border-fl-gray-300 px-4 py-2 text-sm font-medium text-fl-gray-700 transition hover:border-fl-blue hover:text-fl-blue"
-          >
-            WhatsApp
-          </a>
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-fl-blue px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-fl-blue-dark"
-          >
-            <MessageCircleMore className="h-4 w-4" />
-            Pedir orçamento
-          </a>
-        </div>
+<div className="hidden items-center gap-3 sm:flex">
+  <a
+    href="https://www.instagram.com/fl_locacoesvale/"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Instagram da FL Locações"
+    className="inline-flex items-center gap-2 rounded-lg border border-fl-gray-300 px-4 py-2 text-sm font-medium text-fl-gray-700 transition hover:border-fl-blue hover:text-fl-blue"
+  >
+    <Instagram className="h-4 w-4" />
+    Instagram
+  </a>
+
+  <a
+    href={whatsappHref}
+    target="_blank"
+    rel="noreferrer"
+    className="rounded-lg border border-fl-gray-300 px-4 py-2 text-sm font-medium text-fl-gray-700 transition hover:border-fl-blue hover:text-fl-blue"
+  >
+    WhatsApp
+  </a>
+
+  <Link
+    href="/orcamentos"
+    className="inline-flex items-center gap-2 rounded-lg bg-fl-blue px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-fl-blue-dark"
+  >
+    <MessageCircleMore className="h-4 w-4" />
+    Orçamento
+  </Link>
+</div>
 
         <button
           onClick={() => setOpen(!open)}
@@ -91,15 +100,14 @@ export function Header() {
             >
               WhatsApp
             </a>
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              href="/orcamentos"
+              onClick={() => setOpen(false)}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-fl-blue px-4 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-fl-blue-dark"
             >
               <MessageCircleMore className="h-4 w-4" />
-              Pedir orçamento
-            </a>
+              Montar orcamento
+            </Link>
           </nav>
         </div>
       )}

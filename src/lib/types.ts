@@ -8,6 +8,15 @@ export type ProductCategory =
   | "MESAS_CADEIRAS";
 
 export type BookingStatus = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+export type ProductMediaType = "IMAGE" | "VIDEO";
+export type CarouselSlideType = ProductMediaType;
+
+export interface CarouselSlide {
+  src: string;
+  alt: string;
+  type?: CarouselSlideType;
+  poster?: string;
+}
 
 export const productCategoryLabels: Record<ProductCategory, string> = {
   PLATAFORMA_360: "Plataforma 360",
@@ -21,7 +30,7 @@ export interface ProductMedia {
   id: string;
   url: string;
   alt?: string;
-  type: string;
+  type: ProductMediaType;
 }
 
 export interface ProductPriceTier {

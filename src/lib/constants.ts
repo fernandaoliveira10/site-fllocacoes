@@ -7,10 +7,9 @@ export const roleLabels: Record<UserRole, string> = {
 };
 
 export const publicNavigation = [
-  { href: "/", label: "Início" },
   { href: "/produtos", label: "Produtos" },
-  { href: "/orcamento", label: "Orçamento" },
-  { href: "/#contato", label: "Contato" },
+  { href: "/orcamento", label: "Orcamento" },
+  { href: "/produtos#contato", label: "Contato" },
 ];
 
 export const dashboardNavigation = [
@@ -19,7 +18,7 @@ export const dashboardNavigation = [
 ];
 
 export const flWhatsAppNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5512992328681";
-export const flWhatsAppMessage = "Quero um orçamento da F&L Locações para meu evento.";
+export const flWhatsAppMessage = "Quero um orcamento da F&L Locações para meu evento.";
 export const flInstagramUrl = "https://instagram.com/fl_locacoesvale";
 
 export const demoCredentials = [

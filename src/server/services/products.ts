@@ -1,8 +1,24 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import { isDatabaseConfigured } from "@/lib/utils";
 import { mockProducts } from "@/mocks/data";
 import { runWithFallback } from "@/server/services/fallback";
-import type { Product, ProductCategory } from "@/lib/types";
+import type { Product, ProductCategory, ProductMediaType } from "@/lib/types";
+
+const VIDEO_EXTENSIONS = [".mp4", ".webm", ".ogg", ".mov", ".m4v"];
+
+function resolveMediaType(url: string, typeValue: unknown): ProductMediaType {
+  const normalizedType = typeof typeValue === "string" ? typeValue.toUpperCase() : "";
+  if (normalizedType === "VIDEO" || normalizedType === "IMAGE") {
+    return normalizedType;
+  }
+
+  const lowerUrl = url.toLowerCase();
+  if (VIDEO_EXTENSIONS.some((extension) => lowerUrl.includes(extension))) {
+    return "VIDEO";
+  }
+
+  return "IMAGE";
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapDbProduct(product: any): Product {
@@ -16,27 +32,53 @@ function mapDbProduct(product: any): Product {
     priceConfirmed: product.priceConfirmed,
     isActive: product.isActive,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    media: product.media?.map((m: any) => ({
-      id: m.id,
-      url: m.url,
-      alt: m.alt ?? undefined,
-      type: m.type,
+    media: product.media?.map((media: any) => ({
+      id: media.id,
+      url: media.url,
+      alt: media.alt ?? undefined,
+      type: resolveMediaType(media.url, media.type),
     })) ?? [],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    priceTiers: product.priceTiers?.map((t: any) => ({
-      id: t.id,
-      durationHours: t.durationHours,
-      price: t.price,
-      label: t.label ?? undefined,
-      isComboPrice: t.isComboPrice,
+    priceTiers: product.priceTiers?.map((tier: any) => ({
+      id: tier.id,
+      durationHours: tier.durationHours,
+      price: tier.price,
+      label: tier.label ?? undefined,
+      isComboPrice: tier.isComboPrice,
     })) ?? [],
   };
+}
+
+function readMedia(input: Record<string, unknown>) {
+  if (!Object.prototype.hasOwnProperty.call(input, "media")) {
+    return undefined;
+  }
+
+  const rawMedia = input.media;
+  if (!Array.isArray(rawMedia)) {
+    return [];
+  }
+
+  return rawMedia
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const mediaItem = item as { url?: unknown; alt?: unknown; type?: unknown };
+      const url = typeof mediaItem.url === "string" ? mediaItem.url.trim() : "";
+      if (!url) return null;
+
+      return {
+        url,
+        alt: typeof mediaItem.alt === "string" && mediaItem.alt.trim() ? mediaItem.alt.trim() : null,
+        type: resolveMediaType(url, mediaItem.type),
+      };
+    })
+    .filter((item): item is { url: string; alt: string | null; type: ProductMediaType } => item !== null);
 }
 
 export async function getActiveProducts() {
   return runWithFallback(
     async () => {
-      if (!isDatabaseConfigured()) return mockProducts.filter((p) => p.isActive);
+      if (!isDatabaseConfigured()) return mockProducts.filter((product) => product.isActive);
       const products = await prisma.product.findMany({
         where: { isActive: true },
         include: { media: true, priceTiers: true },
@@ -44,7 +86,7 @@ export async function getActiveProducts() {
       });
       return products.map(mapDbProduct);
     },
-    () => mockProducts.filter((p) => p.isActive),
+    () => mockProducts.filter((product) => product.isActive),
   );
 }
 
@@ -80,17 +122,21 @@ export async function createProduct(input: Record<string, unknown>) {
     throw new Error("Banco nao configurado para persistir produtos.");
   }
 
+  const media = readMedia(input);
+
   return prisma.product.create({
     data: {
       name: String(input.name),
       description: input.description ? String(input.description) : null,
       category: input.category as ProductCategory,
-      extraPricePerHour: input.extraPricePerHour !== undefined && input.extraPricePerHour !== null
-        ? Number(input.extraPricePerHour)
-        : null,
+      extraPricePerHour:
+        input.extraPricePerHour !== undefined && input.extraPricePerHour !== null
+          ? Number(input.extraPricePerHour)
+          : null,
       isOutsourced: Boolean(input.isOutsourced ?? false),
       priceConfirmed: Boolean(input.priceConfirmed ?? true),
       isActive: Boolean(input.isActive ?? true),
+      media: media && media.length > 0 ? { create: media } : undefined,
     },
     include: { media: true, priceTiers: true },
   });
@@ -114,6 +160,14 @@ export async function updateProduct(id: string, input: Record<string, unknown>) 
   if (input.isOutsourced !== undefined) data.isOutsourced = Boolean(input.isOutsourced);
   if (input.priceConfirmed !== undefined) data.priceConfirmed = Boolean(input.priceConfirmed);
   if (input.isActive !== undefined) data.isActive = Boolean(input.isActive);
+
+  const media = readMedia(input);
+  if (media !== undefined) {
+    data.media = {
+      deleteMany: {},
+      ...(media.length > 0 ? { create: media } : {}),
+    };
+  }
 
   return prisma.product.update({
     where: { id },

@@ -11,6 +11,14 @@ const productCategorySchema = z.enum([
 const bookingStatusValueSchema = z.enum(["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"]);
 const supportedCitySchema = z.enum(["São José dos Campos", "Caçapava", "Taubaté", "Jacareí"]);
 
+const productMediaSchema = z
+  .object({
+    url: z.string().min(1),
+    alt: z.string().optional(),
+    type: z.enum(["IMAGE", "VIDEO"]).optional(),
+  })
+  .strict();
+
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
@@ -25,6 +33,7 @@ export const productSchema = z
     isOutsourced: z.boolean().optional(),
     priceConfirmed: z.boolean().optional(),
     isActive: z.boolean().optional(),
+    media: z.array(productMediaSchema).optional(),
   })
   .strict();
 

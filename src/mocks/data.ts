@@ -20,10 +20,12 @@ const mockProductsList: Product[] = [
     isActive: true,
     media: [
       { id: "m-p360-1", url: "/images/produtos/plataforma-360.jpg", alt: "Plataforma 360", type: "IMAGE" },
+      { id: "m-p360-2", url: "/images/plataforma_v.mp4", alt: "Plataforma 360 em vídeo", type: "VIDEO" },
+      { id: "m-p360-2", url: "/images/plataforma_v2.mp4", alt: "Plataforma 360 em vídeo 2", type: "VIDEO" },
     ],
     priceTiers: [
       { id: "pt-p360-1", durationHours: 2, price: 32000, label: "2 horas", isComboPrice: false },
-      { id: "pt-p360-2", durationHours: 3, price: 35000, label: "3 horas", isComboPrice: false },
+      { id: "pt-p360-2", durationHours: 3, price: 37000, label: "3 horas", isComboPrice: false },
     ],
   },
   {
@@ -37,10 +39,11 @@ const mockProductsList: Product[] = [
     isActive: true,
     media: [
       { id: "m-ce-1", url: "/images/produtos/cama-elastica.jpg", alt: "Cama Elástica 3m", type: "IMAGE" },
+            { id: "m-ce-2", url: "/images/camaelastica_v.mp4", alt: "Cama Elástica em vídeo", type: "VIDEO" },
     ],
     priceTiers: [
       { id: "pt-ce-1", durationHours: 3, price: 15000, label: "3 horas com monitor", isComboPrice: false },
-      { id: "pt-ce-2", durationHours: 5, price: 17000, label: "5 horas sem monitor", isComboPrice: false },
+      { id: "pt-ce-2", durationHours: 5, price: 20000, label: "5 horas sem monitor", isComboPrice: false },
     ],
   },
   {
@@ -54,6 +57,10 @@ const mockProductsList: Product[] = [
     isActive: true,
     media: [
       { id: "m-foto-1", url: "/images/produtos/fotografia.jpg", alt: "Fotografia Profissional", type: "IMAGE" },
+      { id: "m-foto-2", url: "/images/produtos/foto1.jpeg", alt: "Fotografia Profissional", type: "IMAGE" },
+      { id: "m-foto-3", url: "/images/produtos/foto2.jpeg", alt: "Fotografia Profissional", type: "IMAGE" },
+      { id: "m-foto-4", url: "/images/produtos/foto3.jpeg", alt: "Fotografia Profissional", type: "IMAGE" },
+      { id: "m-foto-5", url: "/images/produtos/foto4.jpeg", alt: "Fotografia Profissional", type: "IMAGE" },
     ],
     priceTiers: [
       { id: "pt-foto-1", durationHours: 2, price: 20000, label: "2 horas", isComboPrice: false },
@@ -190,3 +197,4 @@ export function getMockUserByEmail(email: string) {
   }
   return undefined;
 }
+
