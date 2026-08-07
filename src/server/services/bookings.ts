@@ -1,10 +1,9 @@
-﻿import { prisma } from "@/lib/prisma";
-import { isDatabaseConfigured } from "@/lib/utils";
-import { mockBookings, mockProducts } from "@/mocks/data";
-import { runWithFallback } from "@/server/services/fallback";
+﻿import { mockBookings, mockProducts } from "@/mocks/data";
 import { calculateBookingPricing, getTransportFeeForCity } from "@/lib/booking-pricing";
 import { getProductById } from "@/server/services/products";
 import type { Booking, Product } from "@/lib/types";
+
+const bookingState = mockBookings;
 
 function getFallbackProduct(productId: string): Product {
   return (
@@ -23,40 +22,8 @@ function getFallbackProduct(productId: string): Product {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapDbBooking(booking: any): Booking {
-  return {
-    id: booking.id,
-    clientName: booking.clientName,
-    clientEmail: booking.clientEmail,
-    clientPhone: booking.clientPhone,
-    eventDate: booking.eventDate instanceof Date ? booking.eventDate.toISOString() : booking.eventDate,
-    eventTime: booking.eventTime,
-    durationHours: booking.durationHours,
-    extraHours: booking.extraHours ?? 0,
-    totalAmount: booking.totalAmount,
-    depositAmount: booking.depositAmount,
-    paymentPlan: booking.paymentPlan,
-    paymentMethod: booking.paymentMethod,
-    status: booking.status,
-    notes: booking.notes ?? null,
-    eventType: booking.eventType ?? null,
-    eventAddress: booking.eventAddress ?? null,
-    eventCity: booking.eventCity ?? null,
-    eventNotes: booking.eventNotes ?? null,
-    transportFee: booking.transportFee ?? null,
-    hasTransportFee: booking.hasTransportFee ?? false,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    items: booking.items?.map((item: any) => ({
-      id: item.id,
-      productId: item.productId,
-      product: item.product ?? getFallbackProduct(item.productId),
-      quantity: item.quantity,
-      price: item.price,
-      durationHours: item.durationHours,
-    })) ?? [],
-    createdAt: booking.createdAt instanceof Date ? booking.createdAt.toISOString() : booking.createdAt,
-  };
+function normalizeBooking(booking: Booking) {
+  return booking;
 }
 
 async function resolveInputItems(
@@ -81,7 +48,7 @@ async function resolveInputItems(
     const tier = product.priceTiers.find((priceTier) => priceTier.durationHours === item.durationHours && !priceTier.isComboPrice);
 
     if (!tier) {
-      throw new Error(`Prazo indisponível para ${product.name}.`);
+      throw new Error(`Prazo indisponivel para ${product.name}.`);
     }
 
     resolved.push({
@@ -97,25 +64,20 @@ async function resolveInputItems(
   return resolved;
 }
 
+function findBookingIndex(id: string) {
+  return bookingState.findIndex((booking) => booking.id === id);
+}
+
 export async function getBookings() {
-  return runWithFallback(
-    async () => {
-      if (!isDatabaseConfigured()) return mockBookings;
-      const bookings = await prisma.booking.findMany({
-        include: {
-          items: { include: { product: true } },
-        },
-        orderBy: { createdAt: "desc" },
-      });
-      return bookings.map(mapDbBooking);
-    },
-    () => mockBookings,
-  );
+  return bookingState
+    .slice()
+    .sort((left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime())
+    .map(normalizeBooking);
 }
 
 export async function getBookingById(id: string) {
   const bookings = await getBookings();
-  return bookings.find((b) => b.id === id) ?? null;
+  return bookings.find((booking) => booking.id === id) ?? null;
 }
 
 export async function createBooking(input: {
@@ -150,100 +112,64 @@ export async function createBooking(input: {
   });
   const durationHours = Math.max(...resolvedItems.map((item) => item.durationHours));
   const transportFee = getTransportFeeForCity(input.eventCity);
+  const now = new Date().toISOString();
 
-  if (!isDatabaseConfigured()) {
-    return {
-      id: `booking-mock-${Date.now()}`,
-      clientName: input.clientName,
-      clientEmail: input.clientEmail,
-      clientPhone: input.clientPhone,
-      eventDate: input.eventDate,
-      eventTime: input.eventTime,
-      durationHours,
-      extraHours: pricing.extraHours,
-      totalAmount: pricing.totalAmount,
-      depositAmount: pricing.depositAmount,
-      paymentPlan: "deposit",
-      paymentMethod: "pix",
-      status: "PENDING",
-      notes: null,
-      eventType: input.eventType,
-      eventAddress: input.eventAddress,
-      eventCity: input.eventCity,
-      eventNotes: input.eventNotes ?? null,
-      transportFee,
-      hasTransportFee: transportFee > 0,
-      items: resolvedItems.map((item) => ({
-        id: `bi-mock-${Date.now()}-${item.productId}`,
-        productId: item.productId,
-        product: item.product,
-        quantity: item.quantity,
-        price: item.price,
-        durationHours: item.durationHours,
-      })),
-      createdAt: new Date().toISOString(),
-    } as Booking;
-  }
+  const booking: Booking = {
+    id: `booking-mock-${Date.now()}`,
+    clientName: input.clientName,
+    clientEmail: input.clientEmail,
+    clientPhone: input.clientPhone,
+    eventDate: input.eventDate,
+    eventTime: input.eventTime,
+    durationHours,
+    extraHours: pricing.extraHours,
+    totalAmount: pricing.totalAmount,
+    depositAmount: pricing.depositAmount,
+    paymentPlan: "deposit",
+    paymentMethod: "pix",
+    status: "PENDING",
+    notes: null,
+    eventType: input.eventType,
+    eventAddress: input.eventAddress,
+    eventCity: input.eventCity,
+    eventNotes: input.eventNotes ?? null,
+    transportFee,
+    hasTransportFee: transportFee > 0,
+    items: resolvedItems.map((item, index) => ({
+      id: `bi-mock-${Date.now()}-${index}`,
+      productId: item.productId,
+      product: item.product,
+      quantity: item.quantity,
+      price: item.price,
+      durationHours: item.durationHours,
+    })),
+    createdAt: now,
+  };
 
-  return prisma.booking.create({
-    data: {
-      clientName: input.clientName,
-      clientEmail: input.clientEmail,
-      clientPhone: input.clientPhone,
-      eventDate: new Date(input.eventDate),
-      eventTime: input.eventTime,
-      durationHours,
-      extraHours: pricing.extraHours,
-      totalAmount: pricing.totalAmount,
-      depositAmount: pricing.depositAmount,
-      paymentPlan: "deposit",
-      paymentMethod: "pix",
-      status: "PENDING",
-      eventType: input.eventType,
-      eventAddress: input.eventAddress,
-      eventCity: input.eventCity,
-      eventNotes: input.eventNotes,
-      transportFee,
-      hasTransportFee: transportFee > 0,
-      items: {
-        create: resolvedItems.map((item) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.price,
-          durationHours: item.durationHours,
-        })),
-      },
-    },
-    include: {
-      items: { include: { product: true } },
-    },
-  });
+  bookingState.unshift(booking);
+  return booking;
 }
 
 export async function updateBookingStatus(id: string, status: string, notes?: string | null) {
-  if (!isDatabaseConfigured()) {
-    throw new Error("Banco nao configurado.");
+  const bookingIndex = findBookingIndex(id);
+  if (bookingIndex === -1) {
+    throw new Error("Reserva nao encontrada.");
   }
 
-  const data: Record<string, unknown> = { status };
-  if (notes !== undefined) data.notes = notes;
+  bookingState[bookingIndex].status = status as Booking["status"];
+  if (notes !== undefined) {
+    bookingState[bookingIndex].notes = notes;
+  }
 
-  return prisma.booking.update({
-    where: { id },
-    data,
-    include: {
-      items: { include: { product: true } },
-    },
-  });
+  return bookingState[bookingIndex];
 }
 
 export async function updateBookingNotes(id: string, notes: string | null) {
-  if (!isDatabaseConfigured()) {
-    throw new Error("Banco nao configurado.");
+  const bookingIndex = findBookingIndex(id);
+  if (bookingIndex === -1) {
+    throw new Error("Reserva nao encontrada.");
   }
 
-  return prisma.booking.update({
-    where: { id },
-    data: { notes },
-  });
+  bookingState[bookingIndex].notes = notes;
+  return bookingState[bookingIndex];
 }

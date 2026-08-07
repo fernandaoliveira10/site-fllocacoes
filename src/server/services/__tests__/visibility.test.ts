@@ -1,13 +1,5 @@
 ﻿import { describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/utils", () => ({
-  isDatabaseConfigured: () => false,
-}));
-
-vi.mock("@/lib/prisma", () => ({
-  prisma: {},
-}));
-
 vi.mock("@/mocks/data", () => ({
   mockProducts: [
     {

@@ -1,7 +1,6 @@
-import NextAuth from "next-auth";
+﻿import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
-import { isDatabaseConfigured } from "@/lib/utils";
 import { getMockUserByEmail } from "@/mocks/data";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -17,24 +16,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const email = String(credentials.email);
         const password = String(credentials.password);
+        const mockUser = getMockUserByEmail(email);
 
-        if (!isDatabaseConfigured()) {
-          const mockUser = getMockUserByEmail(email);
-          if (!mockUser || password !== "fl123456") return null;
-          return { id: mockUser.id, email: mockUser.email, name: mockUser.name, role: mockUser.role };
-        }
-
-        try {
-          const { prisma } = await import("@/lib/prisma");
-          const { compareSync } = await import("bcryptjs");
-
-          const user = await prisma.user.findUnique({ where: { email } });
-          if (!user || !compareSync(password, user.passwordHash)) return null;
-
-          return { id: user.id, email: user.email, name: user.name, role: user.role };
-        } catch {
-          return null;
-        }
+        if (!mockUser || password !== "fl123456") return null;
+        return { id: mockUser.id, email: mockUser.email, name: mockUser.name, role: mockUser.role };
       },
     }),
   ],
