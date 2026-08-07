@@ -5,8 +5,11 @@ import { bookingStatusSchema, bookingNotesSchema } from "@/lib/validations";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") {
-    return NextResponse.json({ error: "Nao autorizado." }, { status: 401 });
+  if (!session?.user) {
+    return NextResponse.json({ error: "Nao autenticado." }, { status: 401 });
+  }
+  if (session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Nao autorizado." }, { status: 403 });
   }
 
   const { id } = await params;
@@ -19,8 +22,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") {
-    return NextResponse.json({ error: "Nao autorizado." }, { status: 401 });
+  if (!session?.user) {
+    return NextResponse.json({ error: "Nao autenticado." }, { status: 401 });
+  }
+  if (session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Nao autorizado." }, { status: 403 });
   }
 
   const { id } = await params;

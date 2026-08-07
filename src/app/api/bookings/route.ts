@@ -1,12 +1,16 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { getBookings, createBooking } from "@/server/services/bookings";
+import { getBookings } from "@/server/services/bookings";
+import { sendLeadRequestEmail } from "@/server/services/leads";
 import { bookingSchema } from "@/lib/validations";
 
 export async function GET() {
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") {
-    return NextResponse.json({ error: "Nao autorizado." }, { status: 401 });
+  if (!session?.user) {
+    return NextResponse.json({ error: "Nao autenticado." }, { status: 401 });
+  }
+  if (session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Nao autorizado." }, { status: 403 });
   }
 
   const bookings = await getBookings();
@@ -21,9 +25,10 @@ export async function POST(req: Request) {
   }
 
   try {
-    const booking = await createBooking(parsed.data);
-    return NextResponse.json(booking, { status: 201 });
-  } catch {
-    return NextResponse.json({ error: "Erro ao criar reserva." }, { status: 500 });
+    await sendLeadRequestEmail(parsed.data);
+    return NextResponse.json({ ok: true }, { status: 201 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Erro ao enviar orçamento.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { LogOut, Package, PiggyBank, LayoutDashboard } from "lucide-react";
+﻿import Link from "next/link";
+import { LogOut, Package, LayoutDashboard } from "lucide-react";
 
 import { dashboardNavigation } from "@/lib/constants";
 
@@ -25,7 +25,6 @@ export function Sidebar({ name }: SidebarProps) {
           >
             {item.label === "Resumo" && <LayoutDashboard className="h-4 w-4" />}
             {item.label === "Produtos" && <Package className="h-4 w-4" />}
-            {item.label === "Combos" && <PiggyBank className="h-4 w-4" />}
             <span>{item.label}</span>
           </Link>
         ))}

@@ -1,4 +1,4 @@
-# F&L Locações
+﻿# F&L Locações
 
 Sistema de locação de equipamentos para eventos: Plataforma 360, Cama Elástica 3m, Fotografia Profissional, Piscina de Bolinha, Mesas e Cadeiras.
 
@@ -13,9 +13,9 @@ Sistema de locação de equipamentos para eventos: Plataforma 360, Cama Elástic
 ## Módulos
 
 - Landing page pública com apresentação dos produtos
-- Agendamento online (booking anônimo com combo e itens avulsos)
+- Formulário público de orçamento sem dependência de banco para o lead
 - Dashboard administrativo com resumo financeiro
-- CRUD de produtos e combos
+- CRUD de produtos
 
 ## Setup
 
@@ -35,19 +35,16 @@ npm run dev
 ## Rotas principais
 
 - `/` — Landing page
-- `/agenda` — Agendamento online
+- `/orcamento` — Formulário de orçamento
 - `/login` — Login admin
 - `/dashboard` — Resumo financeiro
 - `/dashboard/produtos` — Gerenciar produtos
-- `/dashboard/combos` — Gerenciar combos
 
 ## APIs
 
 - `GET/POST /api/products`
 - `GET/PATCH/DELETE /api/products/:id`
-- `GET/POST /api/combos`
-- `GET/PATCH/DELETE /api/combos/:id`
-- `POST /api/bookings` (público)
+- `POST /api/bookings` (captura de lead público)
 - `GET /api/bookings` (admin)
 - `PATCH /api/bookings/:id` (admin)
 - `GET /api/dashboard/summary` (admin)

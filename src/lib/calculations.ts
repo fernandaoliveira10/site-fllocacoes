@@ -1,34 +1,41 @@
 import type { DashboardSummary } from "@/lib/types";
 
-export function computeDashboardSummary(bookings: { totalAmount: number; status: string; eventDate: string }[]): DashboardSummary {
+export function computeDashboardSummary(
+  bookings: { totalAmount: number; status: string; eventDate: string }[],
+): DashboardSummary {
   const now = new Date();
 
-  const totalRevenue = bookings
-    .filter((b) => b.status !== "CANCELLED")
-    .reduce((sum, b) => sum + b.totalAmount, 0);
+  const realizedBookings = bookings.filter((b) => b.status === "COMPLETED");
+  const pendingBookings = bookings.filter((b) => b.status === "PENDING" || b.status === "CONFIRMED");
+  const activeBookings = bookings.filter((b) => b.status !== "CANCELLED");
 
-  const thisMonth = bookings.filter((b) => {
-    const d = new Date(b.eventDate);
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && b.status !== "CANCELLED";
+  const realizedRevenue = realizedBookings.reduce((sum, b) => sum + b.totalAmount, 0);
+  const pendingRevenue = pendingBookings.reduce((sum, b) => sum + b.totalAmount, 0);
+
+  const thisMonthRealized = realizedBookings.filter((b) => {
+    const date = new Date(b.eventDate);
+    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
   });
-  const monthlyRevenue = thisMonth.reduce((sum, b) => sum + b.totalAmount, 0);
 
-  const confirmedBookings = bookings.filter((b) => b.status === "CONFIRMED" || b.status === "PENDING");
-  const upcomingBookings = confirmedBookings.filter((b) => new Date(b.eventDate) >= now).length;
+  const monthlyRevenue = thisMonthRealized.reduce((sum, b) => sum + b.totalAmount, 0);
+  const upcomingBookings = activeBookings.filter((b) => {
+    const date = new Date(b.eventDate);
+    return date >= now && (b.status === "PENDING" || b.status === "CONFIRMED");
+  }).length;
 
-  const completedBookings = bookings.filter((b) => b.status === "COMPLETED" || b.status === "CONFIRMED");
-  const avgTicket = completedBookings.length > 0
-    ? Math.round(totalRevenue / completedBookings.length)
+  const avgTicket = realizedBookings.length > 0
+    ? Math.round(realizedRevenue / realizedBookings.length)
     : 0;
 
   return {
-    totalRevenue,
+    realizedRevenue,
+    pendingRevenue,
     monthlyRevenue,
     totalBookings: bookings.length,
     upcomingBookings,
     avgTicket,
     confirmedCount: bookings.filter((b) => b.status === "CONFIRMED").length,
-    completedCount: bookings.filter((b) => b.status === "COMPLETED").length,
+    completedCount: realizedBookings.length,
     cancelledCount: bookings.filter((b) => b.status === "CANCELLED").length,
   };
 }

@@ -18,11 +18,11 @@ const sansFont = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "F&L Locações | Aluguel de Brinquedos para Festas e Eventos",
+  title: "F&L Locações | Aluguel de Atrações para Festas e Eventos",
   description:
     "Aluguel de brinquedos e atrações para festas, empresas e eventos em São José dos Campos, Jacareí e região. Plataforma 360, cama elástica, piscina de bolinhas e mais.",
   openGraph: {
-    title: "F&L Locações | Aluguel de Brinquedos para Festas e Eventos",
+    title: "F&L Locações | Aluguel de Atrações para Festas e Eventos",
     description:
       "Aluguel de brinquedos e atrações para festas, empresas e eventos. Plataforma 360, cama elástica, piscina de bolinhas e muito mais.",
     siteName: "F&L Locações",

@@ -18,8 +18,11 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") {
-    return NextResponse.json({ error: "Nao autorizado." }, { status: 401 });
+  if (!session?.user) {
+    return NextResponse.json({ error: "Nao autenticado." }, { status: 401 });
+  }
+  if (session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Nao autorizado." }, { status: 403 });
   }
 
   const body = await req.json();

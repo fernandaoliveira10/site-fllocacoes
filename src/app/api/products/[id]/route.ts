@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { getProductById, updateProduct } from "@/server/services/products";
+import { deleteProduct, getProductById, updateProduct } from "@/server/services/products";
+import { productUpdateSchema } from "@/lib/validations";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -13,15 +14,23 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") {
-    return NextResponse.json({ error: "Nao autorizado." }, { status: 401 });
+  if (!session?.user) {
+    return NextResponse.json({ error: "Nao autenticado." }, { status: 401 });
+  }
+  if (session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Nao autorizado." }, { status: 403 });
   }
 
   const { id } = await params;
   const body = await req.json();
+  const parsed = productUpdateSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  }
 
   try {
-    const product = await updateProduct(id, body);
+    const product = await updateProduct(id, parsed.data);
     return NextResponse.json(product);
   } catch {
     return NextResponse.json({ error: "Erro ao atualizar produto." }, { status: 500 });
@@ -30,14 +39,17 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") {
-    return NextResponse.json({ error: "Nao autorizado." }, { status: 401 });
+  if (!session?.user) {
+    return NextResponse.json({ error: "Nao autenticado." }, { status: 401 });
+  }
+  if (session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Nao autorizado." }, { status: 403 });
   }
 
   const { id } = await params;
 
   try {
-    await updateProduct(id, { isActive: false });
+    await deleteProduct(id);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Erro ao desativar produto." }, { status: 500 });

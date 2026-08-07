@@ -1,12 +1,17 @@
-export type UserRole = "ADMIN";
+﻿export type UserRole = "ADMIN";
 
-export type ProductCategory = "PLATAFORMA_360" | "CAMA_ELASTICA" | "FOTOGRAFIA" | "PISCINA_BOLINHA" | "MESAS_CADEIRAS";
+export type ProductCategory =
+  | "PLATAFORMA_360"
+  | "CAMA_ELASTICA"
+  | "FOTOGRAFIA"
+  | "PISCINA_BOLINHA"
+  | "MESAS_CADEIRAS";
 
 export type BookingStatus = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
 
 export const productCategoryLabels: Record<ProductCategory, string> = {
   PLATAFORMA_360: "Plataforma 360",
-  CAMA_ELASTICA: "Cama Elástica 3m",
+  CAMA_ELASTICA: "Cama Elastica 3m",
   FOTOGRAFIA: "Fotografia Profissional",
   PISCINA_BOLINHA: "Piscina de Bolinha",
   MESAS_CADEIRAS: "Mesas e Cadeiras",
@@ -40,25 +45,6 @@ export interface Product {
   priceTiers: ProductPriceTier[];
 }
 
-export interface ComboItem {
-  id: string;
-  productId: string;
-  product: Product;
-  quantity: number;
-  durationHours?: number;
-}
-
-export interface Combo {
-  id: string;
-  name: string;
-  description: string | null;
-  totalPrice: number;
-  durationHours: number;
-  discountPct: number | null;
-  isActive: boolean;
-  items: ComboItem[];
-}
-
 export interface BookingItem {
   id: string;
   productId: string;
@@ -77,7 +63,6 @@ export interface Booking {
   eventTime: string;
   durationHours: number;
   extraHours: number;
-  combo: Pick<Combo, "id" | "name"> | null;
   totalAmount: number;
   depositAmount: number;
   paymentPlan: string;
@@ -95,7 +80,8 @@ export interface Booking {
 }
 
 export interface DashboardSummary {
-  totalRevenue: number;
+  realizedRevenue: number;
+  pendingRevenue: number;
   monthlyRevenue: number;
   totalBookings: number;
   upcomingBookings: number;

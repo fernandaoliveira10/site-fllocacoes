@@ -63,8 +63,16 @@ export async function getAllProducts() {
 }
 
 export async function getProductById(id: string) {
-  const products = await getAllProducts();
-  return products.find((p) => p.id === id) ?? null;
+  if (!isDatabaseConfigured()) {
+    return mockProducts.find((product) => product.id === id && product.isActive) ?? null;
+  }
+
+  const product = await prisma.product.findFirst({
+    where: { id, isActive: true },
+    include: { media: true, priceTiers: true },
+  });
+
+  return product ? mapDbProduct(product) : null;
 }
 
 export async function createProduct(input: Record<string, unknown>) {
@@ -77,9 +85,12 @@ export async function createProduct(input: Record<string, unknown>) {
       name: String(input.name),
       description: input.description ? String(input.description) : null,
       category: input.category as ProductCategory,
-      extraPricePerHour: input.extraPricePerHour ? Number(input.extraPricePerHour) : null,
+      extraPricePerHour: input.extraPricePerHour !== undefined && input.extraPricePerHour !== null
+        ? Number(input.extraPricePerHour)
+        : null,
       isOutsourced: Boolean(input.isOutsourced ?? false),
       priceConfirmed: Boolean(input.priceConfirmed ?? true),
+      isActive: Boolean(input.isActive ?? true),
     },
     include: { media: true, priceTiers: true },
   });
@@ -90,9 +101,23 @@ export async function updateProduct(id: string, input: Record<string, unknown>) 
     throw new Error("Banco nao configurado para persistir produtos.");
   }
 
+  const data: Record<string, unknown> = {};
+
+  if (input.name !== undefined) data.name = String(input.name);
+  if (input.description !== undefined) {
+    data.description = input.description === null || input.description === "" ? null : String(input.description);
+  }
+  if (input.category !== undefined) data.category = input.category as ProductCategory;
+  if (input.extraPricePerHour !== undefined) {
+    data.extraPricePerHour = input.extraPricePerHour === null ? null : Number(input.extraPricePerHour);
+  }
+  if (input.isOutsourced !== undefined) data.isOutsourced = Boolean(input.isOutsourced);
+  if (input.priceConfirmed !== undefined) data.priceConfirmed = Boolean(input.priceConfirmed);
+  if (input.isActive !== undefined) data.isActive = Boolean(input.isActive);
+
   return prisma.product.update({
     where: { id },
-    data: input,
+    data,
     include: { media: true, priceTiers: true },
   });
 }

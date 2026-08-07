@@ -1,4 +1,4 @@
-import { Banknote, CalendarDays, DollarSign, TrendingUp } from "lucide-react";
+﻿import { Banknote, CalendarDays, DollarSign, TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/metric-card";
 import { formatCurrency, formatDate } from "@/lib/formatters";
 import { getDashboardSummary } from "@/server/services/dashboard";
@@ -18,28 +18,28 @@ export default async function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Receita total"
-          value={formatCurrency(summary.totalRevenue)}
-          hint="Todas as reservas"
+          label="Receita realizada"
+          value={formatCurrency(summary.realizedRevenue)}
+          hint="Reservas concluídas"
           icon={<Banknote className="h-5 w-5" />}
+        />
+        <MetricCard
+          label="Receita pendente"
+          value={formatCurrency(summary.pendingRevenue)}
+          hint="Pendentes e confirmadas"
+          icon={<DollarSign className="h-5 w-5" />}
         />
         <MetricCard
           label="Faturamento no mês"
           value={formatCurrency(summary.monthlyRevenue)}
-          hint="Mês atual"
-          icon={<DollarSign className="h-5 w-5" />}
+          hint="Concluídas no mês atual"
+          icon={<CalendarDays className="h-5 w-5" />}
         />
         <MetricCard
           label="Ticket médio"
           value={formatCurrency(summary.avgTicket)}
-          hint="Por reserva"
+          hint="Base de reservas concluídas"
           icon={<TrendingUp className="h-5 w-5" />}
-        />
-        <MetricCard
-          label="Próximos eventos"
-          value={String(summary.upcomingBookings)}
-          hint="Reservas futuras"
-          icon={<CalendarDays className="h-5 w-5" />}
         />
       </div>
 
@@ -83,11 +83,11 @@ export default async function DashboardPage() {
                 <tr key={booking.id} className="border-b border-fl-gray-100 text-fl-gray-700">
                   <td className="py-3 pr-4">
                     <p className="font-medium text-fl-blue-dark">{booking.clientName}</p>
-                    <p className="text-xs text-fl-gray-500">{booking.clientEmail}</p>
+                    <p className="text-xs text-fl-gray-500">{booking.clientPhone}</p>
                   </td>
                   <td className="py-3 pr-4">
                     <p>{formatDate(booking.eventDate)}</p>
-                    <p className="text-xs text-fl-gray-500">{booking.eventTime}h · {booking.durationHours}h</p>
+                    <p className="text-xs text-fl-gray-500">{booking.eventTime} · {booking.durationHours}h</p>
                   </td>
                   <td className="py-3 pr-4 font-medium text-fl-blue-dark">
                     {formatCurrency(booking.totalAmount)}
@@ -95,7 +95,7 @@ export default async function DashboardPage() {
                   <td className="py-3 pr-4 text-xs">
                     <p className="capitalize">{booking.paymentMethod}</p>
                     <p className="text-fl-gray-500">
-                      {booking.paymentPlan === "deposit" ? "30% entrada" : "À vista"}
+                      {booking.paymentPlan === "deposit" ? "30% na reserva" : "À vista"}
                     </p>
                   </td>
                   <td className="py-3 pr-4">

@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, MessageCircleMore, X } from "lucide-react";
 
 import { flWhatsAppMessage, flWhatsAppNumber } from "@/lib/constants";
 import { buildWhatsAppUrl } from "@/lib/utils";
@@ -53,9 +53,10 @@ export function Header() {
             href={whatsappHref}
             target="_blank"
             rel="noreferrer"
-            className="rounded-lg bg-fl-blue px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-fl-blue-dark"
+            className="inline-flex items-center gap-2 rounded-lg bg-fl-blue px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-fl-blue-dark"
           >
-            Solicitar orçamento
+            <MessageCircleMore className="h-4 w-4" />
+            Pedir orçamento
           </a>
         </div>
 
@@ -94,9 +95,10 @@ export function Header() {
               href={whatsappHref}
               target="_blank"
               rel="noreferrer"
-              className="rounded-lg bg-fl-blue px-4 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-fl-blue-dark"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-fl-blue px-4 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-fl-blue-dark"
             >
-              Solicitar orçamento
+              <MessageCircleMore className="h-4 w-4" />
+              Pedir orçamento
             </a>
           </nav>
         </div>

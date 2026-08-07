@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -46,9 +46,15 @@ const cardVariants = {
 export function FloatingProducts() {
   return (
     <div className="mx-auto w-full max-w-lg">
-      <p className="text-xs font-semibold uppercase tracking-wider text-fl-gray-400 mb-4">
-        Nossos produtos
-      </p>
+      <div className="mb-4 flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-wider text-fl-gray-400">
+          Mais procurados
+        </p>
+        <span className="rounded-full bg-fl-blue/10 px-3 py-1 text-[11px] font-semibold text-fl-blue">
+          Seleção popular
+        </span>
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         {items.map((item) => (
           <motion.div
@@ -70,9 +76,7 @@ export function FloatingProducts() {
                 />
               </div>
               <div className="px-4 py-3">
-                <p className="text-sm font-semibold text-fl-blue-dark">
-                  {item.label}
-                </p>
+                <p className="text-sm font-semibold text-fl-blue-dark">{item.label}</p>
               </div>
             </div>
           </motion.div>
