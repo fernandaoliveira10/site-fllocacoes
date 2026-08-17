@@ -9,7 +9,7 @@ const productCategorySchema = z.enum([
 ]);
 
 const bookingStatusValueSchema = z.enum(["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"]);
-const supportedCitySchema = z.enum(["São José dos Campos", "Caçapava", "Taubaté", "Jacareí"]);
+const supportedCitySchema = z.enum(["São José dos Campos", "Caçapava", "Taubaté", "Jacareí" ,"Outro"]);
 
 const productMediaSchema = z
   .object({
@@ -54,8 +54,6 @@ export const leadSchema = z
     clientName: z.string().min(3),
     clientPhone: z.string().min(8),
     eventDate: z.string().min(1),
-    eventTime: z.string().min(1),
-    eventNeighborhood: z.string().min(2, "Informe o bairro"),
     eventCity: supportedCitySchema,
     items: z.array(bookingItemInputSchema).min(1),
     extraHours: z.coerce.number().int().min(0).default(0),
