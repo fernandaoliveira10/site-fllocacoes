@@ -3,7 +3,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import type { CarouselSlide } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -51,10 +50,6 @@ export function ImageCarousel({
     return () => window.clearInterval(timer);
   }, [autoPlayMs, hasMultiple, normalizedImages.length]);
 
-  const goToPrevious = () => {
-    setActiveIndex((current) => (current - 1 + normalizedImages.length) % normalizedImages.length);
-  };
-
   const goToNext = () => {
     setActiveIndex((current) => (current + 1) % normalizedImages.length);
   };
@@ -81,7 +76,14 @@ export function ImageCarousel({
 
   return (
     <div className={cn("group relative overflow-hidden rounded-3xl border border-fl-gray-200 bg-fl-gray-100 shadow-soft", className)}>
-      <div className={cn("relative w-full", imageClassName ?? "aspect-[16/9]")}> 
+      <div
+  className={cn(
+    "relative w-full",
+    hasMultiple && "cursor-pointer",
+    imageClassName ?? "aspect-[16/9]"
+  )}
+  onClick={hasMultiple ? goToNext : undefined}
+>
         {videoSlide ? (
           <video
             key={currentSlide.src}
@@ -110,28 +112,15 @@ export function ImageCarousel({
 
       {hasMultiple && (
         <>
-          <button
-            type="button"
-            onClick={goToPrevious}
-            aria-label="Imagem anterior"
-            className="absolute left-4 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/25 bg-white/90 p-2 text-fl-blue-dark shadow-sm transition hover:bg-white md:inline-flex"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={goToNext}
-            aria-label="Próxima imagem"
-            className="absolute right-4 top-1/2 hidden -translate-y-1/2 rounded-full border border-white/25 bg-white/90 p-2 text-fl-blue-dark shadow-sm transition hover:bg-white md:inline-flex"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
           <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2">
             {normalizedImages.map((image, index) => (
               <button
                 key={`${image.src}-${index}`}
                 type="button"
-                onClick={() => setActiveIndex(index)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setActiveIndex(index);
+                }}
                 aria-label={`Ir para a imagem ${index + 1}`}
                 className={cn(
                   "h-2.5 rounded-full transition-all",
