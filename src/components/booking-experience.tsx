@@ -281,21 +281,12 @@ export function BookingExperience() {
               <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} min={new Date(Date.now() + 86400000).toISOString().split("T")[0]} className="mt-2 w-full rounded-xl border border-fl-gray-200 bg-white px-4 py-3 text-fl-gray-900 outline-none transition focus:border-fl-blue" required />
             </div>
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Bairro</label>
-              <input value={eventNeighborhood} onChange={(e) => setEventNeighborhood(e.target.value)} className="mt-2 w-full rounded-xl border border-fl-gray-200 bg-white px-4 py-3 text-fl-gray-900 outline-none transition focus:border-fl-blue" placeholder="Bairro" required />
-            </div>
-            <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Cidade</label>
               <select value={eventCity} onChange={(e) => setEventCity(e.target.value)} className="mt-2 w-full rounded-xl border border-fl-gray-200 bg-white px-4 py-3 text-fl-gray-900 outline-none transition focus:border-fl-blue" required>
                 <option value="">Selecione...</option>
                 {supportedCities.map((city) => <option key={city} value={city}>{city}</option>)}
               </select>
             </div>
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Observações</label>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="mt-2 w-full rounded-xl border border-fl-gray-200 bg-white px-4 py-3 text-fl-gray-900 outline-none transition focus:border-fl-blue" placeholder="Detalhes extras, referência do local, necessidade de montagem, etc. (opcional)" rows={4} />
           </div>
         </div>
 
