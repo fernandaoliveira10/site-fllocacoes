@@ -230,7 +230,7 @@ export function BookingExperience() {
                     <div className="mt-4 flex flex-wrap items-center gap-3">
                       {product.priceTiers.map((tier) => (
                         <button key={tier.id} type="button" disabled={!isSelected} onClick={() => setProductTier(product.id, tier.id)} className={cn("rounded-lg border px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-40", selected?.tierId === tier.id ? "border-fl-blue bg-fl-blue text-white" : "border-fl-gray-300 text-fl-gray-600 hover:border-fl-blue hover:text-fl-blue")}>
-                          {tier.label ?? `${tier.durationHours}h`} • {formatCurrency(tier.price)}
+                          {tier.label ?? `${tier.durationHours}h`}
                         </button>
                       ))}
                     </div>
