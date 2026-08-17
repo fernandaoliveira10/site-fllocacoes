@@ -15,8 +15,6 @@ export interface LeadRequestInput {
   clientName: string;
   clientPhone: string;
   eventDate: string;
-  eventTime: string;
-  eventNeighborhood: string;
   eventCity: string;
   notes?: string;
   extraHours?: number;
@@ -64,8 +62,7 @@ function buildLeadLines(input: LeadRequestInput) {
     `Nome: ${input.clientName}`,
     `Telefone: ${input.clientPhone}`,
     `Data do evento: ${formatDateTime(input.eventDate)}`,
-    `Horário: ${input.eventTime}`,
-    `Local: ${input.eventNeighborhood} - ${input.eventCity}`,
+    `Cidade: ${input.eventCity}`,
     "",
     "Produtos selecionados:",
     ...input.items.map((item) => `- ${item.quantity}x ${resolveProductName(item.productId)} (${item.durationHours}h) - ${formatCurrency(item.price)}`),
@@ -105,8 +102,7 @@ function buildLeadHtml(input: LeadRequestInput) {
       <p><strong>Nome:</strong> ${input.clientName}<br />
       <strong>Telefone:</strong> ${input.clientPhone}<br />
       <strong>Data do evento:</strong> ${formatDateTime(input.eventDate)}<br />
-      <strong>Horário:</strong> ${input.eventTime}<br />
-      <strong>Local:</strong> ${input.eventNeighborhood} - ${input.eventCity}</p>
+      <strong>Local:</strong> ${input.eventCity}</p>
       <h3 style="margin:24px 0 8px;">Produtos selecionados</h3>
       <table style="width:100%;border-collapse:collapse;">
         <thead>
