@@ -270,7 +270,7 @@ export function BookingExperience() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Nome</label>
-              <input value={clientName} onChange={(e) => setClientName(e.target.value)} className="mt-2 w-full rounded-xl border border-fl-gray-200 bg-white px-4 py-3 text-fl-gray-900 outline-none transition focus:border-fl-blue" placeholder="Seu nome completo" required />
+              <input value={clientName} onChange={(e) => setClientName(e.target.value)} className="mt-2 w-full rounded-xl border border-fl-gray-200 bg-white px-4 py-3 text-fl-gray-900 outline-none transition focus:border-fl-blue" placeholder="Seu nome" required />
             </div>
             <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Telefone</label>
@@ -281,12 +281,8 @@ export function BookingExperience() {
               <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} min={new Date(Date.now() + 86400000).toISOString().split("T")[0]} className="mt-2 w-full rounded-xl border border-fl-gray-200 bg-white px-4 py-3 text-fl-gray-900 outline-none transition focus:border-fl-blue" required />
             </div>
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Horário</label>
-              <input type="time" value={eventTime} onChange={(e) => setEventTime(e.target.value)} className="mt-2 w-full rounded-xl border border-fl-gray-200 bg-white px-4 py-3 text-fl-gray-900 outline-none transition focus:border-fl-blue" required />
-            </div>
-            <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Bairro</label>
-              <input value={eventNeighborhood} onChange={(e) => setEventNeighborhood(e.target.value)} className="mt-2 w-full rounded-xl border border-fl-gray-200 bg-white px-4 py-3 text-fl-gray-900 outline-none transition focus:border-fl-blue" placeholder="Nome do bairro" required />
+              <input value={eventNeighborhood} onChange={(e) => setEventNeighborhood(e.target.value)} className="mt-2 w-full rounded-xl border border-fl-gray-200 bg-white px-4 py-3 text-fl-gray-900 outline-none transition focus:border-fl-blue" placeholder="Bairro" required />
             </div>
             <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Cidade</label>
@@ -332,7 +328,7 @@ export function BookingExperience() {
             <div className="rounded-2xl border border-fl-blue/20 bg-fl-blue/5 p-5">
               <p className="text-xs font-semibold uppercase tracking-wider text-fl-blue">Valor parcial dos produtos</p>
               <p className="mt-2 font-display text-3xl font-bold text-fl-blue-dark">{formatCurrency(pricing.totalAmount)}</p>
-              <p className="mt-2 text-sm leading-6 text-fl-gray-600">A taxa de deslocamento será confirmada depois e o valor final será respondido por nós no WhatsApp.</p>
+              <p className="mt-2 text-sm leading-6 text-fl-gray-600">A taxa de deslocamento será confirmada por nós no WhatsApp.</p>
             </div>
           )}
 
@@ -343,7 +339,7 @@ export function BookingExperience() {
             <ArrowRight className="h-4 w-4" />
           </button>
 
-          <p className="text-xs leading-5 text-fl-gray-500">Vamos te responder com o preço final e a cobrança. O cliente pode reservar com 30% de sinal via Pix ou crédito com taxa da maquininha.</p>
+          <p className="text-xs leading-5 text-fl-gray-500">Vamos te responder com o preço final. O cliente pode reservar com 30% de sinal via Pix ou crédito com taxa da maquininha.</p>
         </div>
       </div>
     </form>
