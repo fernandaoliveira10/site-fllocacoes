@@ -97,8 +97,6 @@ export function BookingExperience() {
   const canSubmit = clientName.length >= 3
     && clientPhone.length >= 8
     && eventDate.length > 0
-    && eventTime.length > 0
-    && eventNeighborhood.length >= 2
     && eventCity.length > 0
     && selectedProducts.length > 0;
 
