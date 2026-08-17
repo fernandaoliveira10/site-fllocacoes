@@ -40,16 +40,9 @@ export const supportedCities = [
   "Outro",
 ] as const;
 
-export const transportFeeByCity: Record<(typeof supportedCities)[number], number> = {
-  "São José dos Campos": 1500,
-  Caçapava: 4000,
-  Taubaté: 6000,
-  Jacareí: 5000,
-};
 
 export const coverageInfo = {
   cities: supportedCities.join(", "),
-  transportFeeByCity,
 };
 
 export const extraHourRate = 10000;
