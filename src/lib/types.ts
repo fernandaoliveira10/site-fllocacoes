@@ -62,14 +62,12 @@ export interface BookingItem {
   price: number;
   durationHours: number;
 }
-
 export interface Booking {
   id: string;
   clientName: string;
   clientEmail: string;
   clientPhone: string;
   eventDate: string;
-  eventTime: string;
   durationHours: number;
   extraHours: number;
   totalAmount: number;
@@ -79,11 +77,8 @@ export interface Booking {
   status: BookingStatus;
   notes: string | null;
   eventType: string | null;
-  eventAddress: string | null;
   eventCity: string | null;
   eventNotes: string | null;
-  transportFee: number | null;
-  hasTransportFee: boolean;
   items: BookingItem[];
   createdAt: string;
 }

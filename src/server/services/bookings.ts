@@ -1,5 +1,5 @@
 ﻿import { mockBookings, mockProducts } from "@/mocks/data";
-import { calculateBookingPricing, getTransportFeeForCity } from "@/lib/booking-pricing";
+import { calculateBookingPricing } from "@/lib/booking-pricing";
 import { getProductById } from "@/server/services/products";
 import type { Booking, Product } from "@/lib/types";
 
@@ -85,7 +85,7 @@ export async function createBooking(input: {
   clientEmail: string;
   clientPhone: string;
   eventDate: string;
-  eventTime: string;
+  eventCity: string;
   extraHours?: number;
   items: {
     productId: string;
@@ -94,8 +94,6 @@ export async function createBooking(input: {
     price: number;
   }[];
   eventType: string;
-  eventAddress: string;
-  eventCity: string;
   eventNotes?: string;
 }) {
   const extraHours = input.extraHours ?? 0;
@@ -108,44 +106,38 @@ export async function createBooking(input: {
       extraPricePerHour: item.extraPricePerHour,
     })),
     extraHours,
-    eventCity: input.eventCity,
   });
   const durationHours = Math.max(...resolvedItems.map((item) => item.durationHours));
-  const transportFee = getTransportFeeForCity(input.eventCity);
+
   const now = new Date().toISOString();
 
-  const booking: Booking = {
-    id: `booking-mock-${Date.now()}`,
-    clientName: input.clientName,
-    clientEmail: input.clientEmail,
-    clientPhone: input.clientPhone,
-    eventDate: input.eventDate,
-    eventTime: input.eventTime,
-    durationHours,
-    extraHours: pricing.extraHours,
-    totalAmount: pricing.totalAmount,
-    depositAmount: pricing.depositAmount,
-    paymentPlan: "deposit",
-    paymentMethod: "pix",
-    status: "PENDING",
-    notes: null,
-    eventType: input.eventType,
-    eventAddress: input.eventAddress,
-    eventCity: input.eventCity,
-    eventNotes: input.eventNotes ?? null,
-    transportFee,
-    hasTransportFee: transportFee > 0,
-    items: resolvedItems.map((item, index) => ({
-      id: `bi-mock-${Date.now()}-${index}`,
-      productId: item.productId,
-      product: item.product,
-      quantity: item.quantity,
-      price: item.price,
-      durationHours: item.durationHours,
-    })),
-    createdAt: now,
-  };
-
+const booking: Booking = {
+  id: `booking-mock-${Date.now()}`,
+  clientName: input.clientName,
+  clientEmail: input.clientEmail,
+  clientPhone: input.clientPhone,
+  eventDate: input.eventDate,
+  durationHours,
+  extraHours: pricing.extraHours,
+  totalAmount: pricing.totalAmount,
+  depositAmount: pricing.depositAmount,
+  paymentPlan: "deposit",
+  paymentMethod: "pix",
+  status: "PENDING",
+  notes: null,
+  eventType: input.eventType,
+  eventCity: input.eventCity,
+  eventNotes: input.eventNotes ?? null,
+  items: resolvedItems.map((item, index) => ({
+    id: `bi-mock-${Date.now()}-${index}`,
+    productId: item.productId,
+    product: item.product,
+    quantity: item.quantity,
+    price: item.price,
+    durationHours: item.durationHours,
+  })),
+  createdAt: now,
+};
   bookingState.unshift(booking);
   return booking;
 }

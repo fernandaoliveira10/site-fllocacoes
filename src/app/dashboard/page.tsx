@@ -87,7 +87,7 @@ export default async function DashboardPage() {
                   </td>
                   <td className="py-3 pr-4">
                     <p>{formatDate(booking.eventDate)}</p>
-                    <p className="text-xs text-fl-gray-500">{booking.eventTime} · {booking.durationHours}h</p>
+                    <p className="text-xs text-fl-gray-500">{booking.durationHours}h</p>
                   </td>
                   <td className="py-3 pr-4 font-medium text-fl-blue-dark">
                     {formatCurrency(booking.totalAmount)}
