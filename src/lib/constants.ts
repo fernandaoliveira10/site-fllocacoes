@@ -37,6 +37,7 @@ export const supportedCities = [
   "Caçapava",
   "Taubaté",
   "Jacareí",
+  "Outro",
 ] as const;
 
 export const transportFeeByCity: Record<(typeof supportedCities)[number], number> = {
