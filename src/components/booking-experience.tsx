@@ -40,8 +40,6 @@ export function BookingExperience() {
   const [clientName, setClientName] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [eventDate, setEventDate] = useState("");
-  const [eventTime, setEventTime] = useState("");
-  const [eventNeighborhood, setEventNeighborhood] = useState("");
   const [eventCity, setEventCity] = useState("");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -147,8 +145,6 @@ export function BookingExperience() {
           clientName,
           clientPhone,
           eventDate,
-          eventTime,
-          eventNeighborhood,
           eventCity,
           notes: notes || undefined,
           extraHours,
