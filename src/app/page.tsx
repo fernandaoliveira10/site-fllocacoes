@@ -349,7 +349,7 @@ export default async function HomePage() {
 
                         return (
                           <span key={product.id} className="font-semibold">
-                            {product.name.replace("Combo Promocional ", "")}: {formatCurrency(tier.price)}
+                            {product.name.replace("Combo Promocional ", "")}
                           </span>
                         );
                       })}

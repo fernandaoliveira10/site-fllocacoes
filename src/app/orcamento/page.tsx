@@ -26,7 +26,7 @@ export default function OrcamentoPage() {
             <div>
               <p className="text-sm font-bold">Combos promocionais ativos</p>
               <p className="mt-1 text-sm leading-6 text-amber-900">
-                Plataforma 360 + Cama Elástica com monitor por R$ 520,00 ou Plataforma 360 + Fotografia Profissional por R$ 600,00.
+                Plataforma 360 + Cama Elástica com monitor ou Plataforma 360 + Fotografia Profissional.
               </p>
             </div>
           </div>
