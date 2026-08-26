@@ -22,6 +22,7 @@ interface SelectedProduct {
   productName: string;
   tierId: string;
   durationHours: number;
+  durationLabel: string;
   price: number;
   quantity: number;
   extraPricePerHour: number | null;
@@ -64,6 +65,7 @@ export function BookingExperience() {
                 productName: prod.name,
                 tierId: firstTier.id,
                 durationHours: firstTier.durationHours,
+                durationLabel: firstTier.label ?? `${firstTier.durationHours}h`,
                 price: firstTier.price,
                 quantity: 1,
                 extraPricePerHour: prod.extraPricePerHour,
@@ -106,7 +108,13 @@ export function BookingExperience() {
       const product = products.find((p) => p.id === productId);
       const tier = product?.priceTiers.find((t) => t.id === tierId);
       if (!tier) return sp;
-      return { ...sp, tierId, durationHours: tier.durationHours, price: tier.price };
+      return {
+        ...sp,
+        tierId,
+        durationHours: tier.durationHours,
+        durationLabel: tier.label ?? `${tier.durationHours}h`,
+        price: tier.price,
+      };
     }));
   };
 
@@ -121,6 +129,7 @@ export function BookingExperience() {
         productName: product.name,
         tierId: firstTier.id,
         durationHours: firstTier.durationHours,
+        durationLabel: firstTier.label ?? `${firstTier.durationHours}h`,
         price: firstTier.price,
         quantity: 1,
         extraPricePerHour: product.extraPricePerHour,
@@ -152,6 +161,7 @@ export function BookingExperience() {
             productId: sp.productId,
             quantity: sp.quantity,
             durationHours: sp.durationHours,
+            durationLabel: sp.durationLabel,
             price: sp.price,
           })),
         }),
@@ -238,7 +248,7 @@ export function BookingExperience() {
                           <button type="button" onClick={() => changeQty(product.id, 1)} className="flex h-7 w-7 items-center justify-center rounded-lg border border-fl-gray-300 text-fl-gray-500 hover:text-fl-blue-dark"><Plus className="h-3 w-3" /></button>
                         </div>
                         <div className="ml-auto text-right">
-                          <p className="text-sm text-fl-gray-500">{selected.durationHours}h</p>
+                          <p className="text-sm text-fl-gray-500">{selected.durationLabel}</p>
                           <p className="font-bold text-fl-blue-dark">{formatCurrency(selected.price)}</p>
                         </div>
                       </div>
@@ -293,7 +303,7 @@ export function BookingExperience() {
                   <div key={sp.productId} className="flex items-start justify-between gap-3 text-sm text-fl-gray-700">
                     <div>
                       <p className="font-medium text-fl-blue-dark">{sp.productName}</p>
-                      <p className="text-xs text-fl-gray-500">{sp.quantity}x • {sp.durationHours}h</p>
+                      <p className="text-xs text-fl-gray-500">{sp.quantity}x • {sp.durationLabel}</p>
                     </div>
                     <span className="font-semibold text-fl-blue-dark">{formatCurrency(sp.price * sp.quantity)}</span>
                   </div>
@@ -330,8 +340,6 @@ export function BookingExperience() {
     </form>
   );
 }
-
-
 
 
 

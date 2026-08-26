@@ -2,15 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { MessageCircleMore } from "lucide-react";
+import { ClipboardList, MessageCircleMore } from "lucide-react";
 
 import { flWhatsAppMessage, flWhatsAppNumber } from "@/lib/constants";
 import { buildWhatsAppUrl } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Início" },
-  { href: "/orcamentos", label: "Criar Orçamento" },
-  { href: "/contato", label: "Contato" },
+  { href: "/#servicos", label: "Serviços" },
+  { href: "/#galeria", label: "Galeria" },
+  { href: "/#como-funciona", label: "Como funciona" },
 ];
 
 export function Header() {
@@ -22,10 +22,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-fl-gray-200 bg-white/95 backdrop-blur">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
-        {/* Linha principal */}
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/produtos" className="flex items-center">
+        <div className="flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
+          <Link href="/" className="flex items-center" aria-label="Ir para o início">
             <Image
               src="/images/logo/logo-fl.png"
               alt="F&L Locações"
@@ -36,8 +34,7 @@ export function Header() {
             />
           </Link>
 
-          {/* Navegação desktop */}
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Navegação principal">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -49,19 +46,27 @@ export function Header() {
             ))}
           </nav>
 
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border border-fl-gray-300 px-3 py-2 text-xs font-medium text-fl-gray-700 transition hover:border-fl-blue hover:text-fl-blue sm:px-4 sm:text-sm"
-          >
-            <MessageCircleMore className="h-4 w-4" />
-            <span className="hidden sm:inline">WhatsApp</span>
-          </a>
+          <div className="hidden items-center gap-2 md:flex">
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[#1fa855] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#188a46] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+            >
+              <MessageCircleMore className="h-4 w-4" />
+              WhatsApp
+            </a>
+            <Link
+              href="/orcamento"
+              className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-fl-blue px-4 py-2 text-sm font-semibold text-white transition hover:bg-fl-blue-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fl-blue"
+            >
+              <ClipboardList className="h-4 w-4" />
+              Orçamento
+            </Link>
+          </div>
         </div>
 
-        {/* Navegação mobile sempre visível */}
-        <nav className="grid grid-cols-3 border-t border-fl-gray-100 md:hidden">
+        <nav className="grid grid-cols-3 border-t border-fl-gray-100 lg:hidden" aria-label="Atalhos da página inicial">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -72,7 +77,27 @@ export function Header() {
             </Link>
           ))}
         </nav>
+      </div>
 
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-fl-gray-200 bg-white/95 p-2 shadow-[0_-8px_30px_rgba(15,23,42,0.12)] backdrop-blur md:hidden">
+        <div className="mx-auto grid max-w-lg grid-cols-2 gap-2">
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#1fa855] px-3 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+          >
+            <MessageCircleMore className="h-5 w-5" />
+            WhatsApp
+          </a>
+          <Link
+            href="/orcamento"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-fl-blue px-3 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fl-blue"
+          >
+            <ClipboardList className="h-5 w-5" />
+            Orçamento
+          </Link>
+        </div>
       </div>
     </header>
   );

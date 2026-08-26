@@ -8,6 +8,7 @@ export interface LeadItemInput {
   productId: string;
   quantity: number;
   durationHours: number;
+  durationLabel?: string;
   price: number;
 }
 
@@ -65,7 +66,7 @@ function buildLeadLines(input: LeadRequestInput) {
     `Cidade: ${input.eventCity}`,
     "",
     "Produtos selecionados:",
-    ...input.items.map((item) => `- ${item.quantity}x ${resolveProductName(item.productId)} (${item.durationHours}h) - ${formatCurrency(item.price)}`),
+    ...input.items.map((item) => `- ${item.quantity}x ${resolveProductName(item.productId)} (${item.durationLabel ?? `${item.durationHours}h`}) - ${formatCurrency(item.price)}`),
     "",
     `Subtotal dos produtos: ${formatCurrency(pricing.subtotalAmount)}`,
     pricing.discountAmount > 0 ? `Desconto de pacote: - ${formatCurrency(pricing.discountAmount)}` : "Desconto de pacote: não aplicado",
@@ -89,7 +90,7 @@ function buildLeadHtml(input: LeadRequestInput) {
       (item) => `
         <tr>
           <td style="padding:8px 0;">${item.quantity}x ${resolveProductName(item.productId)}</td>
-          <td style="padding:8px 0; text-align:right;">${item.durationHours}h</td>
+          <td style="padding:8px 0; text-align:right;">${item.durationLabel ?? `${item.durationHours}h`}</td>
           <td style="padding:8px 0; text-align:right;">${formatCurrency(item.price)}</td>
         </tr>
       `,
@@ -108,7 +109,7 @@ function buildLeadHtml(input: LeadRequestInput) {
         <thead>
           <tr>
             <th style="text-align:left;border-bottom:1px solid #e5e7eb;padding-bottom:8px;">Produto</th>
-            <th style="text-align:right;border-bottom:1px solid #e5e7eb;padding-bottom:8px;">Horas</th>
+            <th style="text-align:right;border-bottom:1px solid #e5e7eb;padding-bottom:8px;">Período</th>
             <th style="text-align:right;border-bottom:1px solid #e5e7eb;padding-bottom:8px;">Valor</th>
           </tr>
         </thead>

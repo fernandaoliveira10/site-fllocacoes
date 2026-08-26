@@ -1,41 +1,38 @@
-﻿import { Metadata } from "next";
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { Instagram, ArrowRight, Check, MapPin, MessageCircleMore, Package, ShieldCheck, Truck } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarCheck,
+  Check,
+  ClipboardList,
+  MapPin,
+  MessageCircleMore,
+  PackageCheck,
+  PartyPopper,
+  PlayCircle,
+  ShieldCheck,
+  Sparkles,
+  WalletCards,
+} from "lucide-react";
 
 import { ImageCarousel } from "@/components/image-carousel";
-import type { CarouselSlide } from "@/lib/types";
 import { flWhatsAppMessage, flWhatsAppNumber } from "@/lib/constants";
-
 import { formatCurrency } from "@/lib/formatters";
+import type { CarouselSlide } from "@/lib/types";
 import { buildWhatsAppUrl } from "@/lib/utils";
 import { getAllProducts } from "@/server/services/products";
 
 export const metadata: Metadata = {
-  title: "Produtos | F&L Locações",
+  title: "F&L Locações | Diversão para festas no Vale do Paraíba",
+  description:
+    "Plataforma 360, cama elástica, fotografia profissional e atrações para festas em São José dos Campos, Jacareí, Caçapava, Taubaté e região.",
+  openGraph: {
+    title: "F&L Locações | Diversão e memórias para o seu evento",
+    description:
+      "Atrações, brinquedos e fotografia para festas e eventos no Vale do Paraíba. Consulte disponibilidade e monte seu orçamento.",
+  },
 };
-
-const bannerSlides: CarouselSlide[] = [
-  { src: "/images/capa1.png", alt: "Banner 1" },
-  { src: "/images/capa2.png", alt: "Banner 2" },
-];
-
-const aboutCards = [
-  {
-    icon: Truck,
-    title: "Entrega e montagem",
-    description: "Levamos os itens até o local, montamos tudo e cuidamos da retirada no final.",
-  },
-  {
-    icon: MapPin,
-    title: "Atendimento na região",
-    description: "Atendemos São José dos Campos, Jacareí, Caçapava, Taubaté e arredores.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Suporte confiável",
-    description: "Você fala direto com a equipe e recebe orientação rápida para fechar o evento.",
-  },
-];
 
 const categoryImages: Record<string, string> = {
   PLATAFORMA_360: "/images/produtos/plataforma-360.jpg",
@@ -45,26 +42,133 @@ const categoryImages: Record<string, string> = {
   MESAS_CADEIRAS: "/images/produtos/mesas-cadeiras.jpg",
 };
 
-const productIncludes: Record<string, string[]> = {
-  PLATAFORMA_360: [
-    "Equipamento completo",
-    "Operador durante todo o evento",
-    "Iluminação LED",
-    "Vídeos disponíveis automaticamente via QR Code",
-    "Moldura personalizada e música escolhida pelo cliente",
-  ],
-  CAMA_ELASTICA: ["Montagem", "Desmontagem", "Equipamento higienizado", "Monitor (opcional)"],
-  FOTOGRAFIA: [
-    "Cobertura durante todo o período contratado",
-    "Todas as fotos entregues",
-    "Edição de cor",
-    "Fotos em alta resolução (HD)",
-    "Entrega digital",
-  ],
+const productBenefits: Record<string, string[]> = {
+  PLATAFORMA_360: ["Operador durante o evento", "Iluminação LED", "Vídeos via QR Code"],
+  CAMA_ELASTICA: ["Montagem e desmontagem", "Equipamento higienizado", "Monitor opcional"],
+  FOTOGRAFIA: ["Fotos em alta resolução", "Edição de cor", "Entrega digital"],
 };
 
-function buildProductSlides(product: { name: string; category: string; media: { url: string; alt?: string; type: string }[] }): CarouselSlide[] {
-  const explicitSlides: CarouselSlide[] = product.media
+const trustItems = [
+  { icon: PackageCheck, label: "Montagem e desmontagem", note: "Cuidamos da estrutura para você." },
+  { icon: MapPin, label: "Atendimento regional", note: "Vale do Paraíba e cidades próximas." },
+  { icon: WalletCards, label: "Preços claros", note: "Escolha o período ideal para o evento." },
+  { icon: ShieldCheck, label: "30% na reserva", note: "Pix ou cartão com taxa da maquininha." },
+];
+
+const galleryItems: Array<CarouselSlide & { label: string; className: string }> = [
+  {
+    src: "/images/capa2.png",
+    alt: "Plataforma 360 e cama elástica em eventos da F&L Locações",
+    type: "IMAGE",
+    label: "Diversão para todas as idades",
+    className: "md:col-span-2",
+  },
+  {
+    src: "/images/plataforma_v.mp4",
+    alt: "Plataforma 360 em funcionamento durante um evento",
+    type: "VIDEO",
+    poster: "/images/produtos/plataforma-360.jpg",
+    label: "Plataforma 360 em ação",
+    className: "",
+  },
+  {
+    src: "/images/produtos/foto1.jpeg",
+    alt: "Fotografia profissional em evento",
+    type: "IMAGE",
+    label: "Registros profissionais",
+    className: "",
+  },
+  {
+    src: "/images/camaelastica_v.mp4",
+    alt: "Cama elástica sendo utilizada durante um evento",
+    type: "VIDEO",
+    poster: "/images/produtos/cama-elastica.jpg",
+    label: "Diversão na cama elástica",
+    className: "md:col-span-2",
+  },
+  {
+    src: "/images/produtos/cama-elastica.jpg",
+    alt: "Cama elástica de três metros montada",
+    type: "IMAGE",
+    label: "Estrutura pronta para a festa",
+    className: "",
+  },
+  {
+    src: "/images/video.mp4",
+    alt: "Experiência da F&L Locações registrada em vídeo",
+    type: "VIDEO",
+    poster: "/images/imagem.jpeg",
+    label: "Experiência F&L em movimento",
+    className: "md:col-span-2",
+  },
+  {
+    src: "/images/imagem.jpeg",
+    alt: "Estrutura iluminada da Plataforma 360",
+    type: "IMAGE",
+    label: "Plataforma 360 pronta para o evento",
+    className: "",
+  },
+  {
+    src: "/images/video2.mp4",
+    alt: "Momento de evento registrado pela F&L Locações",
+    type: "VIDEO",
+    poster: "/images/imagem2.jpeg",
+    label: "Momentos reais dos nossos eventos",
+    className: "",
+  },
+  {
+    src: "/images/video3.mp4",
+    alt: "Diversão em evento atendido pela F&L Locações",
+    type: "VIDEO",
+    poster: "/images/imagem.jpeg",
+    label: "Diversão registrada em vídeo",
+    className: "md:col-span-2",
+  },
+  {
+    src: "/images/imagem2.jpeg",
+    alt: "Acessórios divertidos disponíveis para a Plataforma 360",
+    type: "IMAGE",
+    label: "Acessórios para deixar o vídeo ainda mais divertido",
+    className: "md:col-span-2",
+  },
+  {
+    src: "/images/Molduras.png",
+    alt: "Opções de molduras personalizadas da F&L Locações",
+    type: "IMAGE",
+    label: "Molduras personalizadas para cada celebração",
+    className: "md:col-span-2",
+  },
+];
+
+const galleryVideoPattern = /\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/i;
+
+const steps = [
+  {
+    icon: ClipboardList,
+    number: "01",
+    title: "Escolha as experiências",
+    description: "Compare as opções e selecione o que combina com o seu evento.",
+  },
+  {
+    icon: CalendarCheck,
+    number: "02",
+    title: "Informe data e endereço",
+    description: "Confirmamos disponibilidade e possíveis taxas de deslocamento.",
+  },
+  {
+    icon: PartyPopper,
+    number: "03",
+    title: "Confirme a reserva",
+    description: "Com 30% de entrada, sua atração fica reservada para a data.",
+  },
+];
+
+function buildProductSlides(product: {
+  name: string;
+  category: string;
+  media: { url: string; alt?: string; type: string }[];
+}): CarouselSlide[] {
+  const slides = product.media
     .filter((media) => Boolean(media.url))
     .map((media) => ({
       src: media.url,
@@ -72,314 +176,321 @@ function buildProductSlides(product: { name: string; category: string; media: { 
       type: media.type === "VIDEO" ? ("VIDEO" as const) : ("IMAGE" as const),
     }));
 
-  if (explicitSlides.length > 0) {
-    return explicitSlides;
-  }
+  if (slides.length > 0) return slides;
 
-  const fallbackImage = categoryImages[product.category];
-  return fallbackImage ? [{ src: fallbackImage, alt: product.name, type: "IMAGE" }] : [];
+  const fallback = categoryImages[product.category];
+  return fallback ? [{ src: fallback, alt: product.name, type: "IMAGE" }] : [];
 }
 
-export default async function ProdutosPage() {
+export default async function HomePage() {
   const allProducts = await getAllProducts();
-  const mainCategories = ["PLATAFORMA_360", "CAMA_ELASTICA", "FOTOGRAFIA"];
-  const mainProducts = allProducts.filter((product) => mainCategories.includes(product.category) && product.isActive);
-  const consultProducts = allProducts.filter((product) => !mainCategories.includes(product.category) && product.isActive && !product.priceConfirmed);
+  const featuredCategories = ["PLATAFORMA_360", "CAMA_ELASTICA", "FOTOGRAFIA"];
+  const featuredProducts = featuredCategories
+    .map((category) => allProducts.find((product) => product.category === category && product.isActive))
+    .filter((product): product is NonNullable<typeof product> => Boolean(product));
+  const consultProducts = allProducts.filter(
+    (product) => product.isActive && !product.priceConfirmed && !featuredCategories.includes(product.category),
+  );
   const whatsappHref = buildWhatsAppUrl(flWhatsAppNumber, flWhatsAppMessage);
 
   return (
-    <main className="bg-white">
-<section id="banner" className="pt-6 pb-4 sm:py-10 lg:py-16">
-  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div className="relative overflow-hidden rounded-[2.25rem] border border-white/60 bg-white shadow-[0_20px_80px_rgba(15,23,42,0.12)] ring-1 ring-fl-gray-200/70">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-fl-blue/5 via-transparent to-fl-gray-50" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/70 to-transparent" />
+    <main className="overflow-hidden bg-white">
+      <section className="relative border-b border-fl-gray-100 bg-gradient-to-br from-fl-blue/10 via-white to-fl-yellow/10">
+        <div className="pointer-events-none absolute -left-40 top-8 h-80 w-80 rounded-full bg-fl-blue/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-32 bottom-0 h-72 w-72 rounded-full bg-fl-yellow/20 blur-3xl" />
 
-      <ImageCarousel
-        images={bannerSlides}
-        className="relative w-full"
-        imageClassName="aspect-[16/7] object-cover"
-        emptyState={
-          <div className="relative flex min-h-[380px] flex-col items-center justify-center px-6 py-16 text-center sm:px-10">
-            <div className="max-w-3xl">
-              <span className="inline-flex items-center rounded-full border border-fl-blue/10 bg-fl-blue/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-fl-blue">
-                Banner ainda vazio
-              </span>
+        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:py-20">
+          <div className="max-w-xl">
+            <span className="inline-flex items-center gap-2 rounded-full border border-fl-blue/20 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-fl-blue shadow-sm">
+              <Sparkles className="h-4 w-4" />
+              Festas e eventos no Vale do Paraíba
+            </span>
 
-              <h2 className="mt-6 font-display text-3xl font-bold tracking-tight text-fl-blue-dark sm:text-4xl lg:text-5xl">
-                Adicione suas imagens ou vídeos no array{" "}
-                <code className="rounded-lg bg-fl-gray-100 px-2 py-1 text-[0.9em] text-fl-blue-dark">
-                  bannerSlides
-                </code>
-              </h2>
+            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.08] tracking-tight text-fl-blue-dark sm:text-5xl lg:text-6xl">
+              Diversão e memórias para o seu evento, <span className="text-fl-blue">sem complicação.</span>
+            </h1>
 
-              <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-fl-gray-600 sm:text-base">
-                Quando os slides forem inseridos, este espaço vira um carrossel automático,
-                com aparência mais sofisticada no topo da página de produtos.
-              </p>
+            <p className="mt-5 max-w-lg text-base leading-8 text-fl-gray-600 sm:text-lg">
+              Plataforma 360, cama elástica, fotografia profissional e outras soluções para transformar aniversários,
+              casamentos, confraternizações e eventos corporativos.
+            </p>
+
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#1fa855] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-600/15 transition hover:-translate-y-0.5 hover:bg-[#188a46] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+              >
+                <MessageCircleMore className="h-5 w-5" />
+                Falar no WhatsApp
+              </a>
+              <Link
+                href="/orcamento"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-fl-blue px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-fl-blue/15 transition hover:-translate-y-0.5 hover:bg-fl-blue-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fl-blue"
+              >
+                <ClipboardList className="h-5 w-5" />
+                Montar orçamento
+              </Link>
+            </div>
+
+            <p className="mt-4 flex items-center gap-2 text-sm text-fl-gray-500">
+              <Check className="h-4 w-4 text-green-600" />
+              Valores dos produtos na hora e deslocamento confirmado pelo endereço.
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="relative overflow-hidden rounded-[2rem] border-4 border-white bg-white shadow-soft-xl">
+              <div className="relative aspect-[16/10]">
+                <Image
+                  src="/images/capa2.png"
+                  alt="Experiências da F&L Locações em festas e eventos"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 55vw"
+                  className="object-cover"
+                />
+              </div>
+            </div>
+            <div className="absolute -bottom-5 -left-3 rounded-2xl border border-white/70 bg-white/95 px-4 py-3 shadow-soft-lg backdrop-blur sm:-left-6 sm:px-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-fl-blue">Tudo para o evento</p>
+              <p className="mt-1 text-sm font-bold text-fl-blue-dark">Diversão, estrutura e lembranças</p>
             </div>
           </div>
-        }
-      />
-
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/10 to-transparent" />
-    </div>
-  </div>
-</section>
-
-<section className="pt-4 pb-12 sm:py-12 lg:py-16">
-  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div className="grid place-items-center">
-      <div className="relative w-full overflow-hidden rounded-2xl border border-fl-gray-200 bg-white p-5 shadow-soft sm:rounded-[2rem] sm:p-8 lg:p-12">
-        <div className="absolute inset-0 bg-gradient-to-br from-fl-blue/5 via-transparent to-fl-blue/10" />
-
-        <div className="relative mx-auto max-w-4xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-fl-blue">
-            Sobre a F&L Locações
-          </p>
-
-          <h2 className="mt-3 font-display text-2xl font-bold tracking-tight text-fl-blue-dark sm:text-4xl lg:text-5xl">
-            Sua festa merece mais diversão e lembranças inesquecíveis
-          </h2>
-
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-fl-gray-600 sm:text-lg">
-            A F&L Locações leva entretenimento e registros de alta qualidade para eventos
-            em São José dos Campos e todo o Vale do Paraíba. Nossa missão é proporcionar
-            experiências únicas para você e seus convidados.
-          </p>
-
-<div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-3">
-  {aboutCards.map(({ icon: Icon, title, description }) => (
-    <div
-      key={title}
-      className="rounded-2xl border border-fl-gray-200 bg-white p-5 text-left shadow-sm"
-    >
-      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-fl-blue/10">
-        <Icon className="h-5 w-5 text-fl-blue" />
-      </div>
-
-      <h3 className="font-semibold text-fl-blue-dark">
-        {title}
-      </h3>
-
-      <p className="mt-2 text-sm leading-6 text-fl-gray-500">
-        {description}
-      </p>
-    </div>
-  ))}
-</div>
-
-          <p className="mx-auto mt-8 max-w-2xl text-sm leading-6 text-fl-gray-500">
-            Ideal para aniversários, casamentos, eventos corporativos e confraternizações.
-          </p>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
-      <section id="produtos" className="py-20">
+      <section aria-label="Diferenciais da F&L Locações" className="relative z-10 -mt-px bg-white py-8">
+        <div className="mx-auto grid max-w-7xl gap-3 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
+          {trustItems.map(({ icon: Icon, label, note }) => (
+            <div key={label} className="flex items-start gap-3 rounded-2xl border border-fl-gray-200 bg-white p-4 shadow-sm">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-fl-blue/10 text-fl-blue">
+                <Icon className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-sm font-bold text-fl-blue-dark">{label}</p>
+                <p className="mt-1 text-xs leading-5 text-fl-gray-600">{note}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="servicos" className="scroll-mt-28 bg-fl-gray-50 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-fl-blue">
-  Escolha a experiência ideal
-</p>
-<h2 className="mt-4 text-center font-display text-4xl font-bold text-fl-blue-dark sm:text-5xl">
-  Soluções para o seu evento
-</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-base leading-7 text-fl-gray-600">
-            Veja os valores fixos, deixe o deslocamento sob consulta e monte seu orçamento com rapidez.
-          </p>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-fl-blue">Escolha sua experiência</p>
+            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-fl-blue-dark sm:text-5xl">
+              Os destaques para a sua festa
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-fl-gray-600">
+              Confira o valor inicial de cada serviço e monte uma combinação para o seu evento.
+            </p>
+          </div>
 
-          <div className="mt-10 space-y-14 sm:mt-14 sm:space-y-16 lg:mt-16 lg:space-y-24">
-            {mainProducts.map((product, index) => {
-              const includes = productIncludes[product.category] ?? [];
-              const normalTiers = product.priceTiers.filter((tier) => !tier.isComboPrice);
+          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+            {featuredProducts.map((product) => {
+              const normalPrices = product.priceTiers.filter((tier) => !tier.isComboPrice).map((tier) => tier.price);
+              const lowestPrice = normalPrices.length > 0 ? Math.min(...normalPrices) : null;
               const slides = buildProductSlides(product);
+              const benefits = productBenefits[product.category] ?? [];
 
               return (
-                <div
-  key={product.id}
-  className="grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-14"
->
-<div className={index % 2 === 1 ? "lg:order-2" : ""}>
-  <ImageCarousel
-    images={slides}
-    mediaFit="contain"
-    imageClassName="aspect-[4/3]"
-    className="shadow-soft-lg"
-    emptyState={(
-      <div className="flex aspect-[4/3] items-center justify-center rounded-3xl border border-dashed border-fl-gray-300 bg-fl-gray-50">
-        <Package className="h-16 w-16 text-fl-gray-400" />
-      </div>
-    )}
-  />
-</div>
-
-                  <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <h3 className="font-display text-3xl font-bold text-fl-blue-dark">{product.name}</h3>
-                        {product.description && <p className="mt-3 text-base leading-7 text-fl-gray-600">{product.description}</p>}
-                      </div>
+                <article key={product.id} className="group flex overflow-hidden rounded-3xl border border-fl-gray-200 bg-white shadow-soft transition hover:-translate-y-1 hover:shadow-soft-lg">
+                  <div className="flex w-full flex-col">
+                    <div className="relative overflow-hidden bg-fl-gray-100">
+                      <ImageCarousel
+                        images={slides}
+                        imageClassName="aspect-[4/3]"
+                        className="rounded-none border-0 shadow-none"
+                        mediaFit="cover"
+                      />
+                      {lowestPrice !== null && (
+                        <span className="pointer-events-none absolute left-4 top-4 z-10 rounded-full bg-white/95 px-4 py-2 text-sm font-bold text-fl-blue-dark shadow-md backdrop-blur">
+                          A partir de {formatCurrency(lowestPrice)}
+                        </span>
+                      )}
                     </div>
 
-                    {includes.length > 0 && (
-                      <div className="mt-5">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Incluso</p>
-                        <ul className="mt-3 space-y-2">
-                          {includes.map((item) => (
-                            <li key={item} className="flex items-center gap-2 text-sm text-green-700">
-                              <Check className="h-4 w-4 shrink-0" />
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                    <div className="flex flex-1 flex-col p-6">
+                      <h3 className="font-display text-2xl font-bold text-fl-blue-dark">{product.name}</h3>
+                      {product.description && <p className="mt-2 text-sm leading-6 text-fl-gray-600">{product.description}</p>}
 
-                    {normalTiers.length > 0 && (
-                      <div className="mt-5 rounded-2xl border border-fl-gray-200 bg-fl-gray-50 p-5">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Valores</p>
-                        <div className="mt-3 space-y-2">
-                          {normalTiers.map((tier) => (
-                            <div key={tier.id} className="flex items-center justify-between text-sm">
-                              <span className="text-fl-gray-600">{tier.label ?? `${tier.durationHours}h`}</span>
-                              <span className="font-semibold text-fl-blue-dark">{formatCurrency(tier.price)}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                      <ul className="mt-5 space-y-2.5">
+                        {benefits.map((benefit) => (
+                          <li key={benefit} className="flex items-center gap-2 text-sm text-fl-gray-700">
+                            <Check className="h-4 w-4 shrink-0 text-green-600" />
+                            {benefit}
+                          </li>
+                        ))}
+                      </ul>
 
-                    {product.extraPricePerHour ? (
-                      <p className="mt-2 text-sm text-fl-gray-500">
-                        Hora extra: {formatCurrency(product.extraPricePerHour)} por hora
-                      </p>
-                    ) : null}
-
-                    <Link
-                      href={`/orcamento?product=${product.id}`}
-                      className="mt-6 inline-flex items-center gap-2 rounded-xl bg-fl-blue px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-fl-blue-dark"
-                    >
-                      Solicitar orçamento
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
+                      <Link
+                        href={`/orcamento?product=${product.id}`}
+                        className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-fl-blue px-5 py-3 text-sm font-semibold text-white transition hover:bg-fl-blue-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fl-blue"
+                      >
+                        Escolher este serviço
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>
 
-          {consultProducts.length > 0 && (
-            <div className="mt-20">
-              <h2 className="font-display text-3xl font-bold text-fl-blue-dark">Sob consulta</h2>
-              <p className="mt-2 text-sm text-fl-gray-500">
-                Estes produtos sao terceirizados. Consulte valores e disponibilidade.
+          <div className="mt-8 flex flex-col items-start justify-between gap-5 rounded-2xl border border-fl-yellow/40 bg-fl-yellow/10 p-6 sm:flex-row sm:items-center">
+            <div>
+              <p className="font-bold text-fl-blue-dark">Também temos opções sob consulta</p>
+              <p className="mt-1 text-sm text-fl-gray-600">
+                {consultProducts.map((product) => product.name).join(" e ") || "Outras atrações para completar o evento"}.
+                Consulte disponibilidade e valores.
               </p>
-              <div className="mt-6 grid gap-6 sm:grid-cols-2">
-                {consultProducts.map((product) => {
-                  const slides = buildProductSlides(product);
+            </div>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#1fa855] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#188a46] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+            >
+              <MessageCircleMore className="h-4 w-4" />
+              Consultar no WhatsApp
+            </a>
+          </div>
 
-                  return (
-                    <div key={product.id} className="grid gap-4 rounded-2xl border border-fl-gray-200 bg-white p-4 shadow-soft sm:grid-cols-[88px_minmax(0,1fr)] sm:items-center">
-                      <ImageCarousel
-                        images={slides}
-                        mediaFit="contain"
-                        imageClassName="aspect-square"
-                        className="overflow-hidden rounded-xl border-0 shadow-none"
-                        emptyState={(
-                          <div className="flex aspect-square items-center justify-center rounded-xl bg-fl-gray-100">
-                            <Package className="h-8 w-8 text-fl-gray-400" />
-                          </div>
-                        )}
-                      />
-                      <div>
-                        <h3 className="font-display text-xl font-bold text-fl-blue-dark">{product.name}</h3>
-                        {product.description && <p className="mt-1 text-sm text-fl-gray-600">{product.description}</p>}
-                        <span className="mt-2 inline-block rounded-full bg-amber-50 px-3 py-0.5 text-xs font-medium text-amber-700">
-                          Consultar disponibilidade via Whatsapp
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
+          <p className="mt-5 text-center text-sm text-fl-gray-500">
+            Possíveis taxas de deslocamento são consultadas conforme o endereço do evento.
+          </p>
+        </div>
+      </section>
+
+      <section id="galeria" className="scroll-mt-28 py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-fl-blue">Eventos F&L</p>
+            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-fl-blue-dark sm:text-5xl">
+              Experiências que já fazem parte dos nossos eventos
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-fl-gray-600">
+              Estruturas preparadas, atrações em funcionamento e registros que ajudam cada celebração a ficar na memória.
+            </p>
+          </div>
+
+          <div className="mt-10 grid auto-rows-[300px] gap-4 md:grid-cols-3 md:auto-rows-[340px]">
+            {galleryItems.map((item) => (
+              <figure key={item.src} className={`group flex min-h-0 flex-col overflow-hidden rounded-3xl border border-fl-gray-200 bg-white shadow-sm ${item.className}`}>
+                <div className="relative min-h-0 flex-1 overflow-hidden bg-fl-gray-100">
+                  {item.type === "VIDEO" || galleryVideoPattern.test(item.src) ? (
+                    <>
+                      <video
+                        className="h-full w-full object-cover"
+                        controls
+                        preload="metadata"
+                        playsInline
+                        poster={item.poster}
+                        aria-label={item.alt}
+                      >
+                        <source src={item.src} />
+                        Seu navegador não suporta reprodução de vídeo.
+                      </video>
+                      <span className="pointer-events-none absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-black/65 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
+                        <PlayCircle className="h-4 w-4" />
+                        Vídeo
+                      </span>
+                    </>
+                  ) : (
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 66vw"
+                      className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                    />
+                  )}
+                </div>
+                <figcaption className="px-5 py-4 font-semibold text-fl-blue-dark">{item.label}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="como-funciona" className="scroll-mt-28 bg-fl-blue-dark py-16 text-white sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-fl-yellow">Simples e transparente</p>
+            <h2 className="mt-3 font-display text-3xl font-bold sm:text-5xl">Seu evento reservado em três passos</h2>
+          </div>
+
+          <ol className="mt-10 grid gap-5 lg:grid-cols-3">
+            {steps.map(({ icon: Icon, number, title, description }) => (
+              <li key={number} className="relative rounded-3xl border border-white/15 bg-white/5 p-6">
+                <div className="flex items-center justify-between">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-fl-blue text-white">
+                    <Icon className="h-6 w-6" />
+                  </span>
+                  <span className="font-display text-4xl font-bold text-white/15">{number}</span>
+                </div>
+                <h3 className="mt-6 font-display text-xl font-bold">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-white/70">{description}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid items-center gap-8 rounded-[2rem] border border-fl-gray-200 bg-gradient-to-br from-fl-gray-50 to-white p-6 shadow-soft sm:p-10 lg:grid-cols-[auto_1fr] lg:p-12">
+            <div className="relative mx-auto h-32 w-32 overflow-hidden rounded-3xl bg-fl-blue-dark shadow-soft-lg lg:mx-0">
+              <Image src="/images/logo/logo-fl.png" alt="F&L Locações" fill sizes="128px" className="object-contain p-4" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-fl-blue">Sobre a F&L Locações</p>
+              <h2 className="mt-3 font-display text-3xl font-bold text-fl-blue-dark">Cuidado em cada detalhe do seu evento</h2>
+              <p className="mt-4 max-w-3xl text-base leading-7 text-fl-gray-600">
+                Atendemos festas familiares, casamentos, escolas e empresas em São José dos Campos e região. Nossa equipe
+                orienta a escolha, prepara a estrutura e acompanha você até a realização do evento.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-20 sm:pb-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-[2rem] bg-fl-blue px-6 py-12 text-center text-white shadow-soft-xl sm:px-10">
+            <div className="pointer-events-none absolute -left-20 -top-20 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
+            <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-fl-yellow/25 blur-2xl" />
+            <div className="relative mx-auto max-w-3xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/75">Vamos montar seu evento?</p>
+              <h2 className="mt-3 font-display text-3xl font-bold sm:text-5xl">Escolha como prefere começar</h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-white/80">
+                Fale diretamente com a equipe ou monte uma estimativa com os produtos e períodos disponíveis.
+              </p>
+              <div className="mx-auto mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#1fa855] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#188a46] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  <MessageCircleMore className="h-5 w-5" />
+                  Falar no WhatsApp
+                </a>
+                <Link
+                  href="/orcamento"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-fl-blue-dark transition hover:bg-fl-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  <ClipboardList className="h-5 w-5" />
+                  Montar orçamento
+                </Link>
               </div>
             </div>
-          )}
-
-<section
-  id="contato"
-  className="mt-16 overflow-hidden rounded-3xl border border-fl-blue/10 bg-gradient-to-br from-fl-blue/5 via-white to-fl-gray-50 p-6 shadow-soft sm:p-8 lg:p-10"
->
-  <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-    <div className="max-w-2xl">
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-fl-blue">
-        Entre em contato
-      </p>
-
-      <h2 className="mt-2 font-display text-2xl font-bold text-fl-blue-dark sm:text-3xl">
-        Vamos montar a decoração do seu evento?
-      </h2>
-
-      <p className="mt-3 text-sm leading-6 text-fl-gray-600 sm:text-base">
-        Fale com a FL Locações para consultar disponibilidade, tirar dúvidas
-        e solicitar seu orçamento. Atendemos São José dos Campos e região.
-      </p>
-
-      <div className="mt-5 flex flex-col gap-3 text-sm text-fl-gray-600 sm:flex-row sm:flex-wrap sm:gap-6">
-        <div className="flex items-center gap-2">
-          <MapPin className="h-4 w-4 shrink-0 text-fl-blue" />
-          <span>
-            <strong className="font-semibold text-fl-gray-700">
-              Onde atendemos:
-            </strong>{" "}
-            São José dos Campos e região
-          </span>
-        </div>
-
-        <a
-          href="https://www.instagram.com/fl_locacoesvale/"
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 transition hover:text-fl-blue"
-        >
-          <Instagram className="h-4 w-4 shrink-0 text-fl-blue" />
-          <span>
-            <strong className="font-semibold text-fl-gray-700">
-              Instagram:
-            </strong>{" "}
-            @fl_locacoesvale
-          </span>
-        </a>
-      </div>
-    </div>
-
-    <div className="flex flex-col gap-3 sm:flex-row lg:min-w-[220px] lg:flex-col">
-      <a
-        href={whatsappHref}
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center justify-center gap-2 rounded-xl bg-fl-blue px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-fl-blue-dark"
-      >
-        <MessageCircleMore className="h-4 w-4" />
-        Falar no WhatsApp
-      </a>
-
-      <a
-        href="https://www.instagram.com/fl_locacoesvale/"
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center justify-center gap-2 rounded-xl border border-fl-gray-300 bg-white px-5 py-3 text-sm font-semibold text-fl-gray-700 transition hover:border-fl-blue hover:text-fl-blue"
-      >
-        <Instagram className="h-4 w-4" />
-        Ver Instagram
-      </a>
-    </div>
-  </div>
-</section>
+          </div>
         </div>
       </section>
     </main>
   );
 }
-

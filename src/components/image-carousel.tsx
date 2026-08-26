@@ -35,20 +35,22 @@ export function ImageCarousel({
   const hasMultiple = normalizedImages.length > 1;
   const signature = normalizedImages.map((image) => `${image.src}|${image.alt}|${image.type ?? "IMAGE"}`).join("::");
   const fitClassName = mediaFit === "contain" ? "object-contain bg-fl-gray-50" : "object-cover";
+  const currentSlide = normalizedImages[activeIndex] ?? normalizedImages[0];
+  const videoSlide = currentSlide ? isVideoSlide(currentSlide) : false;
 
   useEffect(() => {
     setActiveIndex(0);
   }, [signature]);
 
   useEffect(() => {
-    if (!hasMultiple) return undefined;
+    if (!hasMultiple || videoSlide) return undefined;
 
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % normalizedImages.length);
     }, autoPlayMs);
 
     return () => window.clearInterval(timer);
-  }, [autoPlayMs, hasMultiple, normalizedImages.length]);
+  }, [activeIndex, autoPlayMs, hasMultiple, normalizedImages.length, videoSlide]);
 
   const goToNext = () => {
     setActiveIndex((current) => (current + 1) % normalizedImages.length);
@@ -71,18 +73,15 @@ export function ImageCarousel({
     );
   }
 
-  const currentSlide = normalizedImages[activeIndex];
-  const videoSlide = isVideoSlide(currentSlide);
-
   return (
     <div className={cn("group relative overflow-hidden rounded-3xl border border-fl-gray-200 bg-fl-gray-100 shadow-soft", className)}>
       <div
   className={cn(
     "relative w-full",
-    hasMultiple && "cursor-pointer",
+    hasMultiple && !videoSlide && "cursor-pointer",
     imageClassName ?? "aspect-[16/9]"
   )}
-  onClick={hasMultiple ? goToNext : undefined}
+  onClick={hasMultiple && !videoSlide ? goToNext : undefined}
 >
         {videoSlide ? (
           <video
@@ -107,7 +106,7 @@ export function ImageCarousel({
             priority={activeIndex === 0}
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent" />
       </div>
 
       {hasMultiple && (
@@ -121,7 +120,7 @@ export function ImageCarousel({
                   event.stopPropagation();
                   setActiveIndex(index);
                 }}
-                aria-label={`Ir para a imagem ${index + 1}`}
+                aria-label={`Ir para a mídia ${index + 1}`}
                 className={cn(
                   "h-2.5 rounded-full transition-all",
                   index === activeIndex ? "w-7 bg-white" : "w-2.5 bg-white/60 hover:bg-white/80",

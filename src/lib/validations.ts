@@ -46,6 +46,7 @@ export const bookingItemInputSchema = z.object({
   productId: z.string().min(1),
   quantity: z.coerce.number().int().positive().default(1),
   durationHours: z.coerce.number().int().positive(),
+  durationLabel: z.string().min(1).optional(),
   price: z.coerce.number().int().min(0),
 });
 

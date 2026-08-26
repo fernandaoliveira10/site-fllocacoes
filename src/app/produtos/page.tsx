@@ -209,6 +209,11 @@ export default async function ProdutosPage() {
                       <div>
                         <h3 className="font-display text-3xl font-bold text-fl-blue-dark">{product.name}</h3>
                         {product.description && <p className="mt-3 text-base leading-7 text-fl-gray-600">{product.description}</p>}
+                        {product.category === "CAMA_ELASTICA" && (
+                          <p className="mt-2 text-sm leading-6 text-fl-gray-500">
+                            Possíveis taxas de deslocamento são consultadas conforme o endereço.
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -371,4 +376,3 @@ export default async function ProdutosPage() {
     </main>
   );
 }
-

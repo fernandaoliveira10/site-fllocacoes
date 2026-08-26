@@ -10,6 +10,12 @@ body {
   @apply bg-white font-sans text-fl-gray-900 antialiased;
 }
 
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 4.5rem;
+  }
+}
+
 a {
   @apply transition-colors;
 }
