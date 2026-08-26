@@ -10,6 +10,7 @@ export interface LeadItemInput {
   durationHours: number;
   durationLabel?: string;
   price: number;
+  isComboPrice?: boolean;
 }
 
 export interface LeadRequestInput {

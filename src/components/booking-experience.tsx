@@ -12,6 +12,7 @@ import { supportedCities } from "@/lib/constants";
 interface ProductInfo {
   id: string;
   name: string;
+  description?: string | null;
   category: string;
   priceTiers: { id: string; durationHours: number; price: number; label?: string; isComboPrice: boolean }[];
   extraPricePerHour: number | null;
@@ -26,6 +27,7 @@ interface SelectedProduct {
   price: number;
   quantity: number;
   extraPricePerHour: number | null;
+  isComboPrice: boolean;
 }
 
 const EXTRA_HOURS_NOTE = "R$ 100 por hora extra para os produtos que permitem extensão.";
@@ -42,7 +44,7 @@ export function BookingExperience() {
   const [clientPhone, setClientPhone] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventCity, setEventCity] = useState("");
-  const [notes, setNotes] = useState("");
+  const [notes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +71,7 @@ export function BookingExperience() {
                 price: firstTier.price,
                 quantity: 1,
                 extraPricePerHour: prod.extraPricePerHour,
+                isComboPrice: firstTier.isComboPrice,
               },
             ]);
           }
@@ -88,6 +91,7 @@ export function BookingExperience() {
         price: sp.price,
         quantity: sp.quantity,
         extraPricePerHour: sp.extraPricePerHour,
+        isComboPrice: sp.isComboPrice,
       })),
       extraHours,
     }),
@@ -114,6 +118,7 @@ export function BookingExperience() {
         durationHours: tier.durationHours,
         durationLabel: tier.label ?? `${tier.durationHours}h`,
         price: tier.price,
+        isComboPrice: tier.isComboPrice,
       };
     }));
   };
@@ -133,6 +138,7 @@ export function BookingExperience() {
         price: firstTier.price,
         quantity: 1,
         extraPricePerHour: product.extraPricePerHour,
+        isComboPrice: firstTier.isComboPrice,
       }];
     });
   };
@@ -163,6 +169,7 @@ export function BookingExperience() {
             durationHours: sp.durationHours,
             durationLabel: sp.durationLabel,
             price: sp.price,
+            isComboPrice: sp.isComboPrice,
           })),
         }),
       });
@@ -208,12 +215,22 @@ export function BookingExperience() {
               ) : products.filter((p) => p.priceTiers.length > 0).map((product) => {
                 const selected = selectedProducts.find((sp) => sp.productId === product.id);
                 const isSelected = Boolean(selected);
+                const isCombo = product.category === "COMBO_PROMOCIONAL";
                 return (
                   <div key={product.id} className={cn("rounded-2xl border p-5 transition", isSelected ? "border-fl-blue bg-fl-blue/5 shadow-soft" : "border-fl-gray-200 bg-white")}>
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="font-display text-lg font-bold text-fl-blue-dark">{product.name}</h3>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="font-display text-lg font-bold text-fl-blue-dark">{product.name}</h3>
+                          {isCombo && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-700">
+                              <Sparkles className="h-3 w-3" />
+                              Promocional
+                            </span>
+                          )}
+                        </div>
                         <p className="text-sm text-fl-gray-500">{product.category.replace(/_/g, " ")}</p>
+                        {product.description && <p className="mt-1 text-sm leading-5 text-fl-gray-600">{product.description}</p>}
                       </div>
                       <button
                         type="button"
@@ -303,7 +320,9 @@ export function BookingExperience() {
                   <div key={sp.productId} className="flex items-start justify-between gap-3 text-sm text-fl-gray-700">
                     <div>
                       <p className="font-medium text-fl-blue-dark">{sp.productName}</p>
-                      <p className="text-xs text-fl-gray-500">{sp.quantity}x • {sp.durationLabel}</p>
+                      <p className="text-xs text-fl-gray-500">
+                        {sp.quantity}x • {sp.durationLabel}{sp.isComboPrice ? " • promocional" : ""}
+                      </p>
                     </div>
                     <span className="font-semibold text-fl-blue-dark">{formatCurrency(sp.price * sp.quantity)}</span>
                   </div>
@@ -340,7 +359,5 @@ export function BookingExperience() {
     </form>
   );
 }
-
-
 
 

@@ -177,6 +177,7 @@ export default async function HomePage() {
   const featuredProducts = featuredCategories
     .map((category) => allProducts.find((product) => product.category === category && product.isActive))
     .filter((product): product is NonNullable<typeof product> => Boolean(product));
+  const comboProducts = allProducts.filter((product) => product.category === "COMBO_PROMOCIONAL" && product.isActive);
   const consultProducts = allProducts.filter(
     (product) => product.isActive && !product.priceConfirmed && !featuredCategories.includes(product.category),
   );
@@ -328,6 +329,43 @@ export default async function HomePage() {
               );
             })}
           </div>
+
+          {comboProducts.length > 0 && (
+            <div className="mt-8 overflow-hidden rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex items-start gap-4">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-amber-700 shadow-sm">
+                    <Sparkles className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">Combo promocional</p>
+                    <h3 className="mt-2 font-display text-2xl font-bold text-fl-blue-dark">
+                      Economize combinando atrações por 3 horas
+                    </h3>
+                    <div className="mt-3 flex flex-col gap-2 text-sm text-amber-950 sm:flex-row sm:flex-wrap">
+                      {comboProducts.map((product) => {
+                        const tier = product.priceTiers[0];
+                        if (!tier) return null;
+
+                        return (
+                          <span key={product.id} className="font-semibold">
+                            {product.name.replace("Combo Promocional ", "")}: {formatCurrency(tier.price)}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+                <Link
+                  href="/orcamento"
+                  className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-fl-blue px-5 py-3 text-sm font-semibold text-white transition hover:bg-fl-blue-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fl-blue"
+                >
+                  Ver combos no orçamento
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          )}
 
           <div className="mt-8 flex flex-col items-start justify-between gap-5 rounded-2xl border border-fl-yellow/40 bg-fl-yellow/10 p-6 sm:flex-row sm:items-center">
             <div>

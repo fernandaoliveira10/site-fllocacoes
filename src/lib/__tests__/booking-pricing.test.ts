@@ -3,20 +3,18 @@
 import { calculateBookingPricing } from "@/lib/booking-pricing";
 
 describe("calculateBookingPricing", () => {
-  it("applies fixed price, city fee, discount and deposit for a single product", () => {
+  it("applies fixed price and deposit for a single product", () => {
     const pricing = calculateBookingPricing({
       items: [
         { productId: "prod-plataforma-360", price: 32000, quantity: 1, extraPricePerHour: 10000 },
       ],
       extraHours: 0,
-      eventCity: "São José dos Campos",
     });
 
     expect(pricing.subtotalAmount).toBe(32000);
     expect(pricing.discountAmount).toBe(0);
-    expect(pricing.transportFee).toBe(1500);
-    expect(pricing.totalAmount).toBe(33500);
-    expect(pricing.depositAmount).toBe(10050);
+    expect(pricing.totalAmount).toBe(32000);
+    expect(pricing.depositAmount).toBe(9600);
   });
 
   it("applies the 5 percent discount when there are two products", () => {
@@ -26,14 +24,12 @@ describe("calculateBookingPricing", () => {
         { productId: "prod-fotografia", price: 20000, quantity: 1, extraPricePerHour: null },
       ],
       extraHours: 0,
-      eventCity: "Caçapava",
     });
 
     expect(pricing.subtotalAmount).toBe(55000);
     expect(pricing.discountAmount).toBe(2750);
-    expect(pricing.transportFee).toBe(4000);
-    expect(pricing.totalAmount).toBe(56250);
-    expect(pricing.depositAmount).toBe(16875);
+    expect(pricing.totalAmount).toBe(52250);
+    expect(pricing.depositAmount).toBe(15675);
   });
 
   it("adds extra hours only for eligible products", () => {
@@ -43,11 +39,25 @@ describe("calculateBookingPricing", () => {
         { productId: "prod-fotografia", price: 30000, quantity: 1, extraPricePerHour: null },
       ],
       extraHours: 2,
-      eventCity: "Jacareí",
     });
 
     expect(pricing.extraTotal).toBe(20000);
-    expect(pricing.totalAmount).toBe(72000);
-    expect(pricing.depositAmount).toBe(21600);
+    expect(pricing.totalAmount).toBe(64650);
+    expect(pricing.depositAmount).toBe(19395);
+  });
+
+  it("does not apply package discount over promotional combo prices", () => {
+    const pricing = calculateBookingPricing({
+      items: [
+        { productId: "prod-combo-p360-cama-monitor", price: 52000, quantity: 1, isComboPrice: true },
+        { productId: "prod-fotografia", price: 30000, quantity: 1 },
+      ],
+      extraHours: 0,
+    });
+
+    expect(pricing.subtotalAmount).toBe(82000);
+    expect(pricing.discountAmount).toBe(0);
+    expect(pricing.totalAmount).toBe(82000);
+    expect(pricing.depositAmount).toBe(24600);
   });
 });

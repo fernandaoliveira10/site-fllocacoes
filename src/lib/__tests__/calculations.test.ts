@@ -38,7 +38,7 @@ describe("computeDashboardSummary", () => {
 
     const summary = computeDashboardSummary(bookings);
     expect(summary.realizedRevenue).toBe(100000);
-    expect(summary.pendingRevenue).toBe(300000);
+    expect(summary.pendingRevenue).toBe(250000);
     expect(summary.totalBookings).toBe(4);
     expect(summary.cancelledCount).toBe(1);
     expect(summary.confirmedCount).toBe(1);

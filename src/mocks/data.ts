@@ -70,6 +70,40 @@ const mockProductsList: Product[] = [
     ],
   },
   {
+    id: "prod-combo-p360-cama-monitor",
+    name: "Combo Promocional Plataforma 360 + Cama Elástica com Monitor",
+    description: "Pacote promocional com Plataforma 360 e Cama Elástica com monitor por 3 horas.",
+    category: "COMBO_PROMOCIONAL",
+    extraPricePerHour: null,
+    isOutsourced: false,
+    priceConfirmed: true,
+    isActive: true,
+    media: [
+      { id: "m-combo-p360-cama-1", url: "/images/produtos/plataforma-360.jpg", alt: "Combo Plataforma 360 e Cama Elástica", type: "IMAGE" },
+      { id: "m-combo-p360-cama-2", url: "/images/produtos/cama-elastica.jpg", alt: "Cama Elástica com monitor", type: "IMAGE" },
+    ],
+    priceTiers: [
+      { id: "pt-combo-p360-cama-1", durationHours: 3, price: 52000, label: "3 horas", isComboPrice: true },
+    ],
+  },
+  {
+    id: "prod-combo-p360-fotografia",
+    name: "Combo Promocional Plataforma 360 + Fotografia Profissional",
+    description: "Pacote promocional com Plataforma 360 e fotografia profissional por 3 horas.",
+    category: "COMBO_PROMOCIONAL",
+    extraPricePerHour: null,
+    isOutsourced: false,
+    priceConfirmed: true,
+    isActive: true,
+    media: [
+      { id: "m-combo-p360-foto-1", url: "/images/produtos/plataforma-360.jpg", alt: "Combo Plataforma 360 e fotografia profissional", type: "IMAGE" },
+      { id: "m-combo-p360-foto-2", url: "/images/produtos/fotografia.jpg", alt: "Fotografia Profissional", type: "IMAGE" },
+    ],
+    priceTiers: [
+      { id: "pt-combo-p360-foto-1", durationHours: 3, price: 60000, label: "3 horas", isComboPrice: true },
+    ],
+  },
+  {
     id: "prod-piscina-bolinha",
     name: "Piscina de Bolinha",
     description: "Piscina de bolinha infantil com proteção e monitoramento.",

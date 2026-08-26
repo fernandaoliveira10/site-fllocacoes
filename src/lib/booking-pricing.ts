@@ -5,6 +5,7 @@ export interface BookingPricingItem {
   price: number;
   quantity: number;
   extraPricePerHour?: number | null;
+  isComboPrice?: boolean;
 }
 
 export interface BookingPricingInput {
@@ -30,7 +31,9 @@ export function calculateBookingPricing({
   const normalizedExtraHours = Math.max(0, extraHours);
   const subtotalAmount = normalizedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const itemCount = normalizedItems.length;
-  const discountAmount = itemCount >= 2 ? Math.round(subtotalAmount * bookingDiscountRate) : 0;
+  const discountableItems = normalizedItems.filter((item) => !item.isComboPrice);
+  const discountableSubtotal = discountableItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discountAmount = discountableItems.length >= 2 ? Math.round(discountableSubtotal * bookingDiscountRate) : 0;
   const eligibleExtraBase = normalizedItems.reduce(
     (sum, item) => sum + Math.max(0, item.extraPricePerHour ?? 0) * item.quantity,
     0,

@@ -32,6 +32,7 @@ async function resolveInputItems(
     quantity: number;
     durationHours: number;
     price: number;
+    isComboPrice?: boolean;
   }[],
 ) {
   const resolved = [] as {
@@ -40,12 +41,15 @@ async function resolveInputItems(
     durationHours: number;
     price: number;
     extraPricePerHour: number | null;
+    isComboPrice: boolean;
     product: Product;
   }[];
 
   for (const item of items) {
     const product = (await getProductById(item.productId)) ?? getFallbackProduct(item.productId);
-    const tier = product.priceTiers.find((priceTier) => priceTier.durationHours === item.durationHours && !priceTier.isComboPrice);
+    const tier = product.priceTiers.find(
+      (priceTier) => priceTier.durationHours === item.durationHours && priceTier.isComboPrice === Boolean(item.isComboPrice),
+    );
 
     if (!tier) {
       throw new Error(`Prazo indisponivel para ${product.name}.`);
@@ -57,6 +61,7 @@ async function resolveInputItems(
       durationHours: item.durationHours,
       price: tier.price,
       extraPricePerHour: product.extraPricePerHour,
+      isComboPrice: tier.isComboPrice,
       product,
     });
   }
@@ -92,6 +97,7 @@ export async function createBooking(input: {
     quantity: number;
     durationHours: number;
     price: number;
+    isComboPrice?: boolean;
   }[];
   eventType: string;
   eventNotes?: string;
@@ -104,6 +110,7 @@ export async function createBooking(input: {
       price: item.price,
       quantity: item.quantity,
       extraPricePerHour: item.extraPricePerHour,
+      isComboPrice: item.isComboPrice,
     })),
     extraHours,
   });
