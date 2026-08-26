@@ -205,19 +205,10 @@ export default async function HomePage() {
               casamentos, confraternizações e eventos corporativos.
             </p>
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#1fa855] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-600/15 transition hover:-translate-y-0.5 hover:bg-[#188a46] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
-              >
-                <MessageCircleMore className="h-5 w-5" />
-                Falar no WhatsApp
-              </a>
+            <div className="mt-8 flex">
               <Link
                 href="/orcamento"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-fl-blue px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-fl-blue/15 transition hover:-translate-y-0.5 hover:bg-fl-blue-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fl-blue"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-fl-blue px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-fl-blue/15 transition hover:-translate-y-0.5 hover:bg-fl-blue-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fl-blue sm:w-auto"
               >
                 <ClipboardList className="h-5 w-5" />
                 Montar orçamento
