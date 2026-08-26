@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
@@ -31,6 +31,11 @@ interface SelectedProduct {
 }
 
 const EXTRA_HOURS_NOTE = "R$ 100 por hora extra para os produtos que permitem extensão.";
+const COMBO_CATEGORY = "COMBO_PROMOCIONAL";
+
+function getComboDisplayName(name: string) {
+  return name.replace(/^Combo Promocional\s*/i, "");
+}
 
 export function BookingExperience() {
   const searchParams = useSearchParams();
@@ -105,6 +110,15 @@ export function BookingExperience() {
     && selectedProducts.length > 0;
 
   const hasExtraEligibleProducts = selectedProducts.some((product) => (product.extraPricePerHour ?? 0) > 0);
+  const pricedProducts = useMemo(() => products.filter((product) => product.priceTiers.length > 0), [products]);
+  const comboProducts = useMemo(
+    () => pricedProducts.filter((product) => product.category === COMBO_CATEGORY),
+    [pricedProducts],
+  );
+  const regularProducts = useMemo(
+    () => pricedProducts.filter((product) => product.category !== COMBO_CATEGORY),
+    [pricedProducts],
+  );
 
   const setProductTier = (productId: string, tierId: string) => {
     setSelectedProducts((prev) => prev.map((sp) => {
@@ -144,7 +158,9 @@ export function BookingExperience() {
   };
 
   const changeQty = (productId: string, delta: number) => {
-    setSelectedProducts((prev) => prev.map((sp) => sp.productId === productId ? { ...sp, quantity: Math.max(1, sp.quantity + delta) } : sp));
+    setSelectedProducts((prev) => prev.map((sp) => (
+      sp.productId === productId ? { ...sp, quantity: Math.max(1, sp.quantity + delta) } : sp
+    )));
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -202,9 +218,96 @@ export function BookingExperience() {
     );
   }
 
+  const renderProductCard = (product: ProductInfo, isCombo = false) => {
+    const selected = selectedProducts.find((sp) => sp.productId === product.id);
+    const isSelected = Boolean(selected);
+    const firstTier = product.priceTiers[0];
+    const productName = isCombo ? getComboDisplayName(product.name) : product.name;
+    const showTierSelector = !isCombo || product.priceTiers.length > 1;
+
+    return (
+      <div
+        key={product.id}
+        className={cn(
+          "rounded-2xl border p-5 transition",
+          isCombo ? "border-amber-200 bg-amber-50/80" : "border-fl-gray-200 bg-white",
+          isSelected && (isCombo ? "border-amber-500 bg-amber-100/70 shadow-soft" : "border-fl-blue bg-fl-blue/5 shadow-soft"),
+        )}
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h3 className="font-display text-lg font-bold text-fl-blue-dark">{productName}</h3>
+            {isCombo ? (
+              firstTier && (
+                <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-amber-900">
+                  <span>{firstTier.label ?? `${firstTier.durationHours}h`}</span>
+                  <span className="font-bold text-fl-blue-dark">{formatCurrency(firstTier.price)}</span>
+                </p>
+              )
+            ) : (
+              <>
+                <p className="text-sm text-fl-gray-500">{product.category.replace(/_/g, " ")}</p>
+                {product.description && <p className="mt-1 text-sm leading-5 text-fl-gray-600">{product.description}</p>}
+              </>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => toggleProduct(product)}
+            className={cn(
+              "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transition",
+              isSelected
+                ? "border-green-400 bg-green-50 text-green-700"
+                : "border-fl-blue bg-fl-blue text-white shadow-fl-blue/20 hover:bg-fl-blue-dark",
+            )}
+            aria-label={isSelected ? `Produto ${product.name} adicionado` : `Adicionar ${product.name}`}
+          >
+            {isSelected ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+            <span>{isSelected ? "Adicionado" : "Adicionar"}</span>
+          </button>
+        </div>
+
+        {showTierSelector && (
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            {product.priceTiers.map((tier) => (
+              <button
+                key={tier.id}
+                type="button"
+                disabled={!isSelected}
+                onClick={() => setProductTier(product.id, tier.id)}
+                className={cn(
+                  "rounded-lg border px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-40",
+                  selected?.tierId === tier.id
+                    ? "border-fl-blue bg-fl-blue text-white"
+                    : "border-fl-gray-300 text-fl-gray-600 hover:border-fl-blue hover:text-fl-blue",
+                )}
+              >
+                {tier.label ?? `${tier.durationHours}h`}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {selected && (
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-fl-gray-500">Qtd:</span>
+              <button type="button" onClick={() => changeQty(product.id, -1)} className="flex h-7 w-7 items-center justify-center rounded-lg border border-fl-gray-300 text-fl-gray-500 hover:text-fl-blue-dark"><Minus className="h-3 w-3" /></button>
+              <span className="w-6 text-center text-sm font-medium text-fl-blue-dark">{selected.quantity}</span>
+              <button type="button" onClick={() => changeQty(product.id, 1)} className="flex h-7 w-7 items-center justify-center rounded-lg border border-fl-gray-300 text-fl-gray-500 hover:text-fl-blue-dark"><Plus className="h-3 w-3" /></button>
+            </div>
+            <div className="ml-auto text-right">
+              {!isCombo && <p className="text-sm text-fl-gray-500">{selected.durationLabel}</p>}
+              <p className="font-bold text-fl-blue-dark">{formatCurrency(selected.price)}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-8 rounded-2xl border border-fl-gray-200 bg-white p-6 shadow-soft-lg sm:p-10">
-
       <div className="grid gap-8 lg:grid-cols-[1.35fr_0.95fr]">
         <div className="space-y-6">
           <div>
@@ -212,67 +315,35 @@ export function BookingExperience() {
             <div className="mt-4 space-y-4">
               {loading ? (
                 <p className="text-center text-fl-gray-500">Carregando produtos...</p>
-              ) : products.filter((p) => p.priceTiers.length > 0).map((product) => {
-                const selected = selectedProducts.find((sp) => sp.productId === product.id);
-                const isSelected = Boolean(selected);
-                const isCombo = product.category === "COMBO_PROMOCIONAL";
-                return (
-                  <div key={product.id} className={cn("rounded-2xl border p-5 transition", isSelected ? "border-fl-blue bg-fl-blue/5 shadow-soft" : "border-fl-gray-200 bg-white")}>
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="font-display text-lg font-bold text-fl-blue-dark">{product.name}</h3>
-                          {isCombo && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-700">
-                              <Sparkles className="h-3 w-3" />
-                              Promocional
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm text-fl-gray-500">{product.category.replace(/_/g, " ")}</p>
-                        {product.description && <p className="mt-1 text-sm leading-5 text-fl-gray-600">{product.description}</p>}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => toggleProduct(product)}
-                        className={cn(
-                          "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transition",
-                          isSelected
-                            ? "border-green-400 bg-green-50 text-green-700"
-                            : "border-fl-blue bg-fl-blue text-white shadow-fl-blue/20 hover:bg-fl-blue-dark",
-                        )}
-                        aria-label={isSelected ? `Produto ${product.name} adicionado` : `Adicionar ${product.name}`}
-                      >
-                        {isSelected ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                        <span>{isSelected ? "Adicionado" : "Adicionar"}</span>
-                      </button>
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap items-center gap-3">
-                      {product.priceTiers.map((tier) => (
-                        <button key={tier.id} type="button" disabled={!isSelected} onClick={() => setProductTier(product.id, tier.id)} className={cn("rounded-lg border px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-40", selected?.tierId === tier.id ? "border-fl-blue bg-fl-blue text-white" : "border-fl-gray-300 text-fl-gray-600 hover:border-fl-blue hover:text-fl-blue")}>
-                          {tier.label ?? `${tier.durationHours}h`}
-                        </button>
-                      ))}
-                    </div>
-
-                    {selected && (
-                      <div className="mt-4 flex flex-wrap items-center gap-4">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-fl-gray-500">Qtd:</span>
-                          <button type="button" onClick={() => changeQty(product.id, -1)} className="flex h-7 w-7 items-center justify-center rounded-lg border border-fl-gray-300 text-fl-gray-500 hover:text-fl-blue-dark"><Minus className="h-3 w-3" /></button>
-                          <span className="w-6 text-center text-sm font-medium text-fl-blue-dark">{selected.quantity}</span>
-                          <button type="button" onClick={() => changeQty(product.id, 1)} className="flex h-7 w-7 items-center justify-center rounded-lg border border-fl-gray-300 text-fl-gray-500 hover:text-fl-blue-dark"><Plus className="h-3 w-3" /></button>
-                        </div>
-                        <div className="ml-auto text-right">
-                          <p className="text-sm text-fl-gray-500">{selected.durationLabel}</p>
-                          <p className="font-bold text-fl-blue-dark">{formatCurrency(selected.price)}</p>
+              ) : (
+                <>
+                  {comboProducts.length > 0 && (
+                    <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:p-5">
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-amber-700 shadow-sm">
+                          <Sparkles className="h-5 w-5" />
+                        </span>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wider text-amber-700">Combos promocionais</p>
+                          <p className="mt-1 text-sm text-amber-900">Ofertas fechadas para destacar as combinações mais procuradas.</p>
                         </div>
                       </div>
+                      <div className="mt-4 space-y-3">
+                        {comboProducts.map((product) => renderProductCard(product, true))}
+                      </div>
+                    </section>
+                  )}
+
+                  <section>
+                    {comboProducts.length > 0 && (
+                      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Produtos avulsos</p>
                     )}
-                  </div>
-                );
-              })}
+                    <div className="space-y-4">
+                      {regularProducts.map((product) => renderProductCard(product))}
+                    </div>
+                  </section>
+                </>
+              )}
             </div>
 
             {hasExtraEligibleProducts && (
@@ -319,9 +390,9 @@ export function BookingExperience() {
                 {selectedProducts.map((sp) => (
                   <div key={sp.productId} className="flex items-start justify-between gap-3 text-sm text-fl-gray-700">
                     <div>
-                      <p className="font-medium text-fl-blue-dark">{sp.productName}</p>
+                      <p className="font-medium text-fl-blue-dark">{sp.isComboPrice ? getComboDisplayName(sp.productName) : sp.productName}</p>
                       <p className="text-xs text-fl-gray-500">
-                        {sp.quantity}x • {sp.durationLabel}{sp.isComboPrice ? " • promocional" : ""}
+                        {sp.quantity}x • {sp.durationLabel}
                       </p>
                     </div>
                     <span className="font-semibold text-fl-blue-dark">{formatCurrency(sp.price * sp.quantity)}</span>
@@ -359,5 +430,3 @@ export function BookingExperience() {
     </form>
   );
 }
-
-
