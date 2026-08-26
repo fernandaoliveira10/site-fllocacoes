@@ -43,7 +43,7 @@ const categoryImages: Record<string, string> = {
 };
 
 const productBenefits: Record<string, string[]> = {
-  PLATAFORMA_360: ["Operador durante o evento", "Iluminação LED", "Vídeos via QR Code"],
+  PLATAFORMA_360: ["Operador durante o evento", "Iluminação LED", "Vídeos via QR Code","Moldura personalizada"],
   CAMA_ELASTICA: ["Montagem e desmontagem", "Equipamento higienizado", "Monitor opcional"],
   FOTOGRAFIA: ["Fotos em alta resolução", "Edição de cor", "Entrega digital"],
 };
@@ -56,26 +56,13 @@ const trustItems = [
 ];
 
 const galleryItems: Array<CarouselSlide & { label: string; className: string }> = [
-  {
-    src: "/images/capa2.png",
-    alt: "Plataforma 360 e cama elástica em eventos da F&L Locações",
-    type: "IMAGE",
-    label: "Diversão para todas as idades",
-    className: "md:col-span-2",
-  },
+
   {
     src: "/images/plataforma_v.mp4",
     alt: "Plataforma 360 em funcionamento durante um evento",
     type: "VIDEO",
     poster: "/images/produtos/plataforma-360.jpg",
     label: "Plataforma 360 em ação",
-    className: "",
-  },
-  {
-    src: "/images/produtos/foto1.jpeg",
-    alt: "Fotografia profissional em evento",
-    type: "IMAGE",
-    label: "Registros profissionais",
     className: "",
   },
   {
@@ -141,6 +128,8 @@ const galleryItems: Array<CarouselSlide & { label: string; className: string }> 
 ];
 
 const galleryVideoPattern = /\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/i;
+const galleryVideos = galleryItems.filter((item) => item.type === "VIDEO" || galleryVideoPattern.test(item.src));
+const galleryImages = galleryItems.filter((item) => item.type !== "VIDEO" && !galleryVideoPattern.test(item.src));
 
 const steps = [
   {
@@ -244,7 +233,7 @@ export default async function HomePage() {
             <div className="relative overflow-hidden rounded-[2rem] border-4 border-white bg-white shadow-soft-xl">
               <div className="relative aspect-[16/10]">
                 <Image
-                  src="/images/capa2.png"
+                  src="/images/capa1.png"
                   alt="Experiências da F&L Locações em festas e eventos"
                   fill
                   priority
@@ -377,42 +366,56 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="mt-10 grid auto-rows-[300px] gap-4 md:grid-cols-3 md:auto-rows-[340px]">
-            {galleryItems.map((item) => (
-              <figure key={item.src} className={`group flex min-h-0 flex-col overflow-hidden rounded-3xl border border-fl-gray-200 bg-white shadow-sm ${item.className}`}>
-                <div className="relative min-h-0 flex-1 overflow-hidden bg-fl-gray-100">
-                  {item.type === "VIDEO" || galleryVideoPattern.test(item.src) ? (
-                    <>
-                      <video
-                        className="h-full w-full object-cover"
-                        controls
-                        preload="metadata"
-                        playsInline
-                        poster={item.poster}
-                        aria-label={item.alt}
-                      >
-                        <source src={item.src} />
-                        Seu navegador não suporta reprodução de vídeo.
-                      </video>
-                      <span className="pointer-events-none absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-black/65 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
-                        <PlayCircle className="h-4 w-4" />
-                        Vídeo
-                      </span>
-                    </>
-                  ) : (
-                    <Image
-                      src={item.src}
-                      alt={item.alt}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 66vw"
-                      className="object-cover transition duration-500 group-hover:scale-[1.03]"
-                    />
-                  )}
+          <div className="-mx-4 mt-10 flex gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:px-0 lg:grid lg:grid-cols-5 lg:overflow-visible lg:pb-0">
+            {galleryVideos.map((item) => (
+              <figure
+                key={item.src}
+                className="group flex w-[78vw] max-w-[320px] shrink-0 flex-col overflow-hidden rounded-3xl border border-fl-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-soft-lg sm:w-[42vw] lg:w-auto lg:max-w-none"
+              >
+                <div className="relative aspect-[9/16] overflow-hidden bg-fl-gray-900">
+                  <video
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+                    controls
+                    preload="metadata"
+                    playsInline
+                    poster={item.poster}
+                    aria-label={item.alt}
+                  >
+                    <source src={item.src} />
+                    Seu navegador não suporta reprodução de vídeo.
+                  </video>
+                  <span className="pointer-events-none absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-black/65 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
+                    <PlayCircle className="h-4 w-4" />
+                    Vídeo
+                  </span>
                 </div>
-                <figcaption className="px-5 py-4 font-semibold text-fl-blue-dark">{item.label}</figcaption>
+                <figcaption className="px-5 py-4 text-sm font-semibold leading-5 text-fl-blue-dark">{item.label}</figcaption>
               </figure>
             ))}
           </div>
+
+<div className="-mx-4 mt-10 flex gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:px-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0">
+  {galleryImages.map((item) => (
+    <figure
+      key={item.src}
+      className="group flex w-[78vw] max-w-[320px] shrink-0 flex-col overflow-hidden rounded-3xl border border-fl-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-soft-lg sm:w-[42vw] lg:w-auto lg:max-w-none"
+    >
+      <div className="relative aspect-[4/3] overflow-hidden bg-fl-gray-100">
+        <Image
+          src={item.src}
+          alt={item.alt}
+          fill
+          sizes="(max-width: 640px) 78vw, (max-width: 1024px) 42vw, 25vw"
+          className="object-cover transition duration-500 group-hover:scale-[1.03]"
+        />
+      </div>
+
+      <figcaption className="px-5 py-4 text-sm font-semibold leading-5 text-fl-blue-dark">
+        {item.label}
+      </figcaption>
+    </figure>
+  ))}
+</div>
         </div>
       </section>
 

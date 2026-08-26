@@ -22,7 +22,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-fl-gray-200 bg-white/95 backdrop-blur">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
+        <div className="flex h-16 items-center justify-between gap-3 lg:h-[4.5rem]">
           <Link href="/" className="flex items-center" aria-label="Ir para o início">
             <Image
               src="/images/logo/logo-fl.png"
@@ -46,27 +46,27 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="flex items-center gap-2">
             <a
               href={whatsappHref}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[#1fa855] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#188a46] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#1fa855] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#188a46] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 sm:px-4"
             >
               <MessageCircleMore className="h-4 w-4" />
-              WhatsApp
+              <span className="hidden sm:inline">WhatsApp</span>
             </a>
             <Link
               href="/orcamento"
-              className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-fl-blue px-4 py-2 text-sm font-semibold text-white transition hover:bg-fl-blue-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fl-blue"
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-fl-blue px-3 py-2 text-sm font-semibold text-white transition hover:bg-fl-blue-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fl-blue sm:px-4"
             >
               <ClipboardList className="h-4 w-4" />
-              Orçamento
+              <span className="hidden sm:inline">Orçamento</span>
             </Link>
           </div>
         </div>
 
-        <nav className="grid grid-cols-3 border-t border-fl-gray-100 lg:hidden" aria-label="Atalhos da página inicial">
+        <nav className="hidden grid-cols-3 border-t border-fl-gray-100 sm:grid lg:hidden" aria-label="Atalhos da página inicial">
           {navItems.map((item) => (
             <Link
               key={item.href}
