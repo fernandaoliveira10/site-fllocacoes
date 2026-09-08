@@ -29,6 +29,7 @@ function normalizeBooking(booking: Booking) {
 async function resolveInputItems(
   items: {
     productId: string;
+    tierId?: string;
     quantity: number;
     durationHours: number;
     price: number;
@@ -47,9 +48,12 @@ async function resolveInputItems(
 
   for (const item of items) {
     const product = (await getProductById(item.productId)) ?? getFallbackProduct(item.productId);
-    const tier = product.priceTiers.find(
-      (priceTier) => priceTier.durationHours === item.durationHours && priceTier.isComboPrice === Boolean(item.isComboPrice),
-    );
+    const tier = item.tierId
+      ? product.priceTiers.find((priceTier) => priceTier.id === item.tierId)
+      : product.priceTiers.find(
+          (priceTier) =>
+            priceTier.durationHours === item.durationHours && priceTier.isComboPrice === Boolean(item.isComboPrice),
+        );
 
     if (!tier) {
       throw new Error(`Prazo indisponivel para ${product.name}.`);
@@ -60,7 +64,7 @@ async function resolveInputItems(
       quantity: item.quantity,
       durationHours: item.durationHours,
       price: tier.price,
-      extraPricePerHour: product.extraPricePerHour,
+      extraPricePerHour: tier.extraPricePerHour ?? product.extraPricePerHour,
       isComboPrice: tier.isComboPrice,
       product,
     });
@@ -94,6 +98,7 @@ export async function createBooking(input: {
   extraHours?: number;
   items: {
     productId: string;
+    tierId?: string;
     quantity: number;
     durationHours: number;
     price: number;

@@ -1,10 +1,10 @@
 ﻿import { Metadata } from "next";
 import Link from "next/link";
-import { Instagram, ArrowRight, Check, MapPin, MessageCircleMore, Package, ShieldCheck, Truck } from "lucide-react";
+import { Instagram, ArrowRight, Check, MapPin, MessageCircleMore, Package } from "lucide-react";
 
 import { ImageCarousel } from "@/components/image-carousel";
 import type { CarouselSlide } from "@/lib/types";
-import { flWhatsAppMessage, flWhatsAppNumber, coverageInfo } from "@/lib/constants";
+import { flWhatsAppMessage, flWhatsAppNumber } from "@/lib/constants";
 
 import { formatCurrency } from "@/lib/formatters";
 import { buildWhatsAppUrl } from "@/lib/utils";
@@ -19,28 +19,11 @@ const bannerSlides: CarouselSlide[] = [
   { src: "/images/capa2.png", alt: "Banner 2" },
 ];
 
-const aboutCards = [
-  {
-    icon: Truck,
-    title: "Entrega e montagem",
-    description: "Levamos os itens até o local, montamos tudo e cuidamos da retirada no final.",
-  },
-  {
-    icon: MapPin,
-    title: "Atendimento na região",
-    description: "Atendemos São José dos Campos, Jacareí, Caçapava, Taubaté e arredores.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Suporte confiável",
-    description: "Você fala direto com a equipe e recebe orientação rápida para fechar o evento.",
-  },
-];
-
 const categoryImages: Record<string, string> = {
   PLATAFORMA_360: "/images/produtos/plataforma-360.jpg",
   CAMA_ELASTICA: "/images/produtos/cama-elastica.jpg",
   FOTOGRAFIA: "/images/produtos/fotografia.jpg",
+  TOTEM_FOTOGRAFICO: "/images/produtos/totem-1.jpeg",
   PISCINA_BOLINHA: "/images/produtos/piscina-bolinha.jpg",
   MESAS_CADEIRAS: "/images/produtos/mesas-cadeiras.jpg",
 };
@@ -60,6 +43,14 @@ const productIncludes: Record<string, string[]> = {
     "Edicao de cor",
     "Fotos em alta resolucao (HD)",
     "Entrega digital",
+  ],
+  TOTEM_FOTOGRAFICO: [
+    "Fotos ilimitadas durante o periodo contratado",
+    "QR Code para convidados baixarem as fotos no celular",
+    "Moldura/carrossel de fotos personalizado",
+    "Monitor durante todo o evento",
+    "Envio de todas as fotos digitais apos o evento",
+    "Impressao na hora nas opcoes com fotos impressas",
   ],
 };
 
@@ -82,7 +73,7 @@ function buildProductSlides(product: { name: string; category: string; media: { 
 
 export default async function ProdutosPage() {
   const allProducts = await getAllProducts();
-  const mainCategories = ["PLATAFORMA_360", "CAMA_ELASTICA", "FOTOGRAFIA"];
+  const mainCategories = ["PLATAFORMA_360", "CAMA_ELASTICA", "FOTOGRAFIA", "TOTEM_FOTOGRAFICO"];
   const mainProducts = allProducts.filter((product) => mainCategories.includes(product.category) && product.isActive);
   const consultProducts = allProducts.filter((product) => !mainCategories.includes(product.category) && product.isActive && !product.priceConfirmed);
   const whatsappHref = buildWhatsAppUrl(flWhatsAppNumber, flWhatsAppMessage);
@@ -236,9 +227,16 @@ export default async function ProdutosPage() {
                         <p className="text-xs font-semibold uppercase tracking-wider text-fl-gray-500">Valores fixos</p>
                         <div className="mt-3 space-y-2">
                           {normalTiers.map((tier) => (
-                            <div key={tier.id} className="flex items-center justify-between text-sm">
-                              <span className="text-fl-gray-600">{tier.label ?? `${tier.durationHours}h`}</span>
-                              <span className="font-semibold text-fl-blue-dark">{formatCurrency(tier.price)}</span>
+                            <div key={tier.id} className="flex items-start justify-between gap-4 text-sm">
+                              <div>
+                                <span className="text-fl-gray-600">{tier.label ?? `${tier.durationHours}h`}</span>
+                                {tier.extraPricePerHour ? (
+                                  <p className="mt-0.5 text-xs text-fl-gray-500">
+                                    Hora extra: {formatCurrency(tier.extraPricePerHour)}
+                                  </p>
+                                ) : null}
+                              </div>
+                              <span className="shrink-0 font-semibold text-fl-blue-dark">{formatCurrency(tier.price)}</span>
                             </div>
                           ))}
                         </div>

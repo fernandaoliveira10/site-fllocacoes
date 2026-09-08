@@ -38,6 +38,7 @@ const categoryImages: Record<string, string> = {
   PLATAFORMA_360: "/images/produtos/plataforma-360.jpg",
   CAMA_ELASTICA: "/images/produtos/cama-elastica.jpg",
   FOTOGRAFIA: "/images/produtos/fotografia.jpg",
+  TOTEM_FOTOGRAFICO: "/images/produtos/totem-1.jpeg",
   PISCINA_BOLINHA: "/images/produtos/piscina-bolinha.jpg",
   MESAS_CADEIRAS: "/images/produtos/mesas-cadeiras.jpg",
 };
@@ -46,6 +47,7 @@ const productBenefits: Record<string, string[]> = {
   PLATAFORMA_360: ["Operador durante o evento", "Iluminação LED", "Vídeos via QR Code","Moldura personalizada"],
   CAMA_ELASTICA: ["Montagem e desmontagem", "Equipamento higienizado", "Monitor opcional"],
   FOTOGRAFIA: ["Fotos em alta resolução", "Edição de cor", "Entrega digital"],
+  TOTEM_FOTOGRAFICO: ["Fotos ilimitadas", "QR Code para convidados", "Moldura personalizada", "Opcao com impressao"],
 };
 
 const trustItems = [
@@ -173,7 +175,7 @@ function buildProductSlides(product: {
 
 export default async function HomePage() {
   const allProducts = await getAllProducts();
-  const featuredCategories = ["PLATAFORMA_360", "CAMA_ELASTICA", "FOTOGRAFIA"];
+  const featuredCategories = ["PLATAFORMA_360", "CAMA_ELASTICA", "FOTOGRAFIA", "TOTEM_FOTOGRAFICO"];
   const featuredProducts = featuredCategories
     .map((category) => allProducts.find((product) => product.category === category && product.isActive))
     .filter((product): product is NonNullable<typeof product> => Boolean(product));
@@ -270,7 +272,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+          <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {featuredProducts.map((product) => {
               const normalPrices = product.priceTiers.filter((tier) => !tier.isComboPrice).map((tier) => tier.price);
               const lowestPrice = normalPrices.length > 0 ? Math.min(...normalPrices) : null;

@@ -4,6 +4,7 @@ const productCategorySchema = z.enum([
   "PLATAFORMA_360",
   "CAMA_ELASTICA",
   "FOTOGRAFIA",
+  "TOTEM_FOTOGRAFICO",
   "COMBO_PROMOCIONAL",
   "PISCINA_BOLINHA",
   "MESAS_CADEIRAS",
@@ -45,10 +46,12 @@ export const productUpdateSchema = productSchema.partial().refine(
 
 export const bookingItemInputSchema = z.object({
   productId: z.string().min(1),
+  tierId: z.string().min(1).optional(),
   quantity: z.coerce.number().int().positive().default(1),
   durationHours: z.coerce.number().int().positive(),
   durationLabel: z.string().min(1).optional(),
   price: z.coerce.number().int().min(0),
+  extraPricePerHour: z.coerce.number().int().min(0).optional().nullable(),
   isComboPrice: z.boolean().optional(),
 });
 

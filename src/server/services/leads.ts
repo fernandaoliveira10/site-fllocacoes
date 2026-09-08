@@ -6,10 +6,12 @@ import { mockProducts } from "@/mocks/data";
 
 export interface LeadItemInput {
   productId: string;
+  tierId?: string;
   quantity: number;
   durationHours: number;
   durationLabel?: string;
   price: number;
+  extraPricePerHour?: number | null;
   isComboPrice?: boolean;
 }
 
@@ -71,6 +73,7 @@ function buildLeadLines(input: LeadRequestInput) {
     "",
     `Subtotal dos produtos: ${formatCurrency(pricing.subtotalAmount)}`,
     pricing.discountAmount > 0 ? `Desconto de pacote: - ${formatCurrency(pricing.discountAmount)}` : "Desconto de pacote: não aplicado",
+    pricing.extraTotal > 0 ? `Horas extras (${pricing.extraHours}h): ${formatCurrency(pricing.extraTotal)}` : "Horas extras: não aplicadas",
     `Total parcial dos produtos: ${formatCurrency(pricing.totalAmount)}`,
     `Taxa de deslocamento: sob consulta (${supportedCities.includes(input.eventCity as (typeof supportedCities)[number]) ? input.eventCity : "cidade a confirmar"})`,
     "",
@@ -118,6 +121,7 @@ function buildLeadHtml(input: LeadRequestInput) {
       </table>
       <p style="margin-top:16px;"><strong>Subtotal dos produtos:</strong> ${formatCurrency(pricing.subtotalAmount)}<br />
       <strong>Desconto de pacote:</strong> ${pricing.discountAmount > 0 ? `- ${formatCurrency(pricing.discountAmount)}` : "não aplicado"}<br />
+      <strong>Horas extras:</strong> ${pricing.extraTotal > 0 ? `${pricing.extraHours}h - ${formatCurrency(pricing.extraTotal)}` : "não aplicadas"}<br />
       <strong>Total parcial dos produtos:</strong> ${formatCurrency(pricing.totalAmount)}<br />
       <strong>Taxa de deslocamento:</strong> sob consulta</p>
       <ul>

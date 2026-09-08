@@ -4,6 +4,7 @@ export type ProductCategory =
   | "PLATAFORMA_360"
   | "CAMA_ELASTICA"
   | "FOTOGRAFIA"
+  | "TOTEM_FOTOGRAFICO"
   | "COMBO_PROMOCIONAL"
   | "PISCINA_BOLINHA"
   | "MESAS_CADEIRAS";
@@ -23,6 +24,7 @@ export const productCategoryLabels: Record<ProductCategory, string> = {
   PLATAFORMA_360: "Plataforma 360",
   CAMA_ELASTICA: "Cama Elastica 3m",
   FOTOGRAFIA: "Fotografia Profissional",
+  TOTEM_FOTOGRAFICO: "Totem Fotografico",
   COMBO_PROMOCIONAL: "Combo Promocional",
   PISCINA_BOLINHA: "Piscina de Bolinha",
   MESAS_CADEIRAS: "Mesas e Cadeiras",
@@ -40,6 +42,7 @@ export interface ProductPriceTier {
   durationHours: number;
   price: number;
   label?: string;
+  extraPricePerHour?: number | null;
   isComboPrice: boolean;
 }
 

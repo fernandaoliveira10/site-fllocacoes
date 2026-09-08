@@ -14,7 +14,14 @@ interface ProductInfo {
   name: string;
   description?: string | null;
   category: string;
-  priceTiers: { id: string; durationHours: number; price: number; label?: string; isComboPrice: boolean }[];
+  priceTiers: {
+    id: string;
+    durationHours: number;
+    price: number;
+    label?: string;
+    extraPricePerHour?: number | null;
+    isComboPrice: boolean;
+  }[];
   extraPricePerHour: number | null;
 }
 
@@ -30,11 +37,15 @@ interface SelectedProduct {
   isComboPrice: boolean;
 }
 
-const EXTRA_HOURS_NOTE = "R$ 100 por hora extra para os produtos que permitem extensão.";
+const EXTRA_HOURS_NOTE = "A hora extra segue o valor da opcao selecionada.";
 const COMBO_CATEGORY = "COMBO_PROMOCIONAL";
 
 function getComboDisplayName(name: string) {
   return name.replace(/^Combo Promocional\s*/i, "");
+}
+
+function getTierExtraPricePerHour(product: ProductInfo, tier: ProductInfo["priceTiers"][number]) {
+  return tier.extraPricePerHour ?? product.extraPricePerHour;
 }
 
 export function BookingExperience() {
@@ -75,7 +86,7 @@ export function BookingExperience() {
                 durationLabel: firstTier.label ?? `${firstTier.durationHours}h`,
                 price: firstTier.price,
                 quantity: 1,
-                extraPricePerHour: prod.extraPricePerHour,
+                extraPricePerHour: getTierExtraPricePerHour(prod, firstTier),
                 isComboPrice: firstTier.isComboPrice,
               },
             ]);
@@ -125,13 +136,14 @@ export function BookingExperience() {
       if (sp.productId !== productId) return sp;
       const product = products.find((p) => p.id === productId);
       const tier = product?.priceTiers.find((t) => t.id === tierId);
-      if (!tier) return sp;
+      if (!product || !tier) return sp;
       return {
         ...sp,
         tierId,
         durationHours: tier.durationHours,
         durationLabel: tier.label ?? `${tier.durationHours}h`,
         price: tier.price,
+        extraPricePerHour: getTierExtraPricePerHour(product, tier),
         isComboPrice: tier.isComboPrice,
       };
     }));
@@ -151,7 +163,7 @@ export function BookingExperience() {
         durationLabel: firstTier.label ?? `${firstTier.durationHours}h`,
         price: firstTier.price,
         quantity: 1,
-        extraPricePerHour: product.extraPricePerHour,
+        extraPricePerHour: getTierExtraPricePerHour(product, firstTier),
         isComboPrice: firstTier.isComboPrice,
       }];
     });
@@ -181,10 +193,12 @@ export function BookingExperience() {
           extraHours,
           items: selectedProducts.map((sp) => ({
             productId: sp.productId,
+            tierId: sp.tierId,
             quantity: sp.quantity,
             durationHours: sp.durationHours,
             durationLabel: sp.durationLabel,
             price: sp.price,
+            extraPricePerHour: sp.extraPricePerHour,
             isComboPrice: sp.isComboPrice,
           })),
         }),
@@ -298,6 +312,9 @@ export function BookingExperience() {
             </div>
             <div className="ml-auto text-right">
               {!isCombo && <p className="text-sm text-fl-gray-500">{selected.durationLabel}</p>}
+              {selected.extraPricePerHour ? (
+                <p className="text-xs text-fl-gray-500">Hora extra: {formatCurrency(selected.extraPricePerHour)}</p>
+              ) : null}
               <p className="font-bold text-fl-blue-dark">{formatCurrency(selected.price)}</p>
             </div>
           </div>
