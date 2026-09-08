@@ -9,7 +9,10 @@ import {
 import { buildWhatsAppUrl } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Contato | F&L Locações",
+  title: "Contato",
+  description:
+    "Fale com a F&L Locações pelo WhatsApp ou Instagram para consultar disponibilidade, tirar dúvidas e solicitar orçamento de atrações para o seu evento no Vale do Paraíba.",
+  alternates: { canonical: "/contato" },
 };
 
 export default function ContatoPage() {

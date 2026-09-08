@@ -6,6 +6,8 @@ import "./globals.css";
 
 import { Header } from "@/components/header";
 import { SiteFooter } from "@/components/site-footer";
+import { StructuredData } from "@/components/structured-data";
+import { siteDescription, siteName, siteUrl } from "@/lib/site";
 
 const displayFont = Syne({
   subsets: ["latin"],
@@ -19,16 +21,42 @@ const sansFont = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "F&L Locações | Aluguel de Atrações para Festas e Eventos",
-  description:
-    "Aluguel de brinquedos e atrações para festas, empresas e eventos em São José dos Campos, Jacareí e região. Plataforma 360, cama elástica, piscina de bolinhas e mais.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "F&L Locações | Aluguel de Atrações para Festas e Eventos",
+    template: "%s | F&L Locações",
+  },
+  description: siteDescription,
+  keywords: [
+    "aluguel de plataforma 360",
+    "aluguel de cama elástica",
+    "totem fotográfico para festa",
+    "fotografia para eventos",
+    "atrações para festa São José dos Campos",
+    "locação de brinquedos Vale do Paraíba",
+    "aluguel de atrações Jacareí",
+  ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "F&L Locações | Aluguel de Atrações para Festas e Eventos",
-    description:
-      "Aluguel de brinquedos e atrações para festas, empresas e eventos. Plataforma 360, cama elástica, piscina de bolinhas e muito mais.",
-    siteName: "F&L Locações",
+    description: siteDescription,
+    url: siteUrl,
+    siteName,
     locale: "pt_BR",
     type: "website",
+    images: [{ url: "/images/capa1.png", width: 1717, height: 916, alt: "Atrações da F&L Locações para festas e eventos" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "F&L Locações | Aluguel de Atrações para Festas e Eventos",
+    description: siteDescription,
+    images: ["/images/capa1.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -45,6 +73,7 @@ export default function RootLayout({
             __html: "document.documentElement.classList.remove('no-js');",
           }}
         />
+        <StructuredData />
         <Header />
         {children}
         <SiteFooter />

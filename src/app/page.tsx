@@ -24,9 +24,10 @@ import type { CarouselSlide } from "@/lib/types";
 import { getAllProducts } from "@/server/services/products";
 
 export const metadata: Metadata = {
-  title: "F&L Locações | Diversão para festas no Vale do Paraíba",
+  title: { absolute: "F&L Locações | Diversão para festas no Vale do Paraíba" },
   description:
     "Plataforma 360, cama elástica, fotografia profissional e atrações para festas em São José dos Campos, Jacareí, Caçapava, Taubaté e região.",
+  alternates: { canonical: "/" },
   openGraph: {
     title: "F&L Locações | Diversão e memórias para o seu evento",
     description:

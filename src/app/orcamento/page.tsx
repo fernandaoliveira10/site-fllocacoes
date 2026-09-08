@@ -5,9 +5,10 @@ import { CalendarCheck, ClipboardList, Sparkles } from "lucide-react";
 import { BookingExperience } from "@/components/booking-experience";
 
 export const metadata: Metadata = {
-  title: "Orçamento | F&L Locações",
+  title: "Orçamento",
   description:
     "Monte seu orçamento com a F&L Locações: escolha produtos, período e quantidade e veja o valor dos produtos na hora.",
+  alternates: { canonical: "/orcamento" },
 };
 
 const guideSteps = [

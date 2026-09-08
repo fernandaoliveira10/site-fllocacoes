@@ -11,9 +11,10 @@ import { formatCurrency } from "@/lib/formatters";
 import { getAllProducts } from "@/server/services/products";
 
 export const metadata: Metadata = {
-  title: "Produtos e preços | F&L Locações",
+  title: "Produtos e preços",
   description:
     "Valores da Plataforma 360, cama elástica de 3 metros, fotografia profissional e totem fotográfico. Deslocamento sob consulta e reserva com 30% de sinal.",
+  alternates: { canonical: "/produtos" },
 };
 
 const bannerSlides: CarouselSlide[] = [
