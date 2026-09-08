@@ -28,7 +28,48 @@ textarea {
 }
 
 ::selection {
-  background: rgba(11, 94, 215, 0.12);
+  background: rgba(11, 94, 215, 0.14);
+}
+
+@layer components {
+  .fl-shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .fl-eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-fl-blue;
+  }
+
+  .fl-heading {
+    @apply font-display font-bold tracking-tight text-fl-blue-dark;
+    text-wrap: balance;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Scroll reveal — progressively enhanced. Without JS or with reduced motion,
+     content stays fully visible. */
+  .fl-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .fl-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* No-JS fallback: never hide content behind an animation that can't run. */
+.no-js .fl-reveal {
+  opacity: 1;
+  transform: none;
 }
 
 @keyframes float {
@@ -56,4 +97,23 @@ textarea {
 
 .animate-float-slow {
   animation: float-slow 8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    scroll-behavior: auto;
+  }
+
+  .fl-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .animate-float,
+  .animate-float-delayed,
+  .animate-float-slow,
+  .animate-marquee-x {
+    animation: none !important;
+  }
 }

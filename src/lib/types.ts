@@ -22,9 +22,9 @@ export interface CarouselSlide {
 
 export const productCategoryLabels: Record<ProductCategory, string> = {
   PLATAFORMA_360: "Plataforma 360",
-  CAMA_ELASTICA: "Cama Elastica 3m",
+  CAMA_ELASTICA: "Cama Elástica 3m",
   FOTOGRAFIA: "Fotografia Profissional",
-  TOTEM_FOTOGRAFICO: "Totem Fotografico",
+  TOTEM_FOTOGRAFICO: "Totem Fotográfico",
   COMBO_PROMOCIONAL: "Combo Promocional",
   PISCINA_BOLINHA: "Piscina de Bolinha",
   MESAS_CADEIRAS: "Mesas e Cadeiras",

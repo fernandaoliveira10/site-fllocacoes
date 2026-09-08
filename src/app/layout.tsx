@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 import { Header } from "@/components/header";
+import { SiteFooter } from "@/components/site-footer";
 
 const displayFont = Syne({
   subsets: ["latin"],
@@ -37,10 +38,16 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className="no-js" suppressHydrationWarning>
       <body className={`${displayFont.variable} ${sansFont.variable}`}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "document.documentElement.classList.remove('no-js');",
+          }}
+        />
         <Header />
         {children}
+        <SiteFooter />
       </body>
     </html>
   );

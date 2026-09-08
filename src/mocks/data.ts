@@ -71,7 +71,7 @@ const mockProductsList: Product[] = [
   },
   {
     id: "prod-totem-fotografico",
-    name: "Totem Fotografico",
+    name: "Totem Fotográfico",
     description: "Fotos ilimitadas com moldura personalizada, QR Code e acompanhamento durante o evento.",
     category: "TOTEM_FOTOGRAFICO",
     extraPricePerHour: null,
@@ -79,9 +79,9 @@ const mockProductsList: Product[] = [
     priceConfirmed: true,
     isActive: true,
     media: [
-      { id: "m-totem-1", url: "/images/produtos/totem-1.jpeg", alt: "Totem Fotografico", type: "IMAGE" },
-      { id: "m-totem-2", url: "/images/produtos/totem-2.mp4", alt: "Totem Fotografico em video", type: "VIDEO" },
-      { id: "m-totem-3", url: "/images/produtos/totem-3.mp4", alt: "Totem Fotografico em video 2", type: "VIDEO" },
+      { id: "m-totem-1", url: "/images/produtos/totem-1.jpeg", alt: "Totem Fotográfico", type: "IMAGE" },
+      { id: "m-totem-2", url: "/images/produtos/totem-2.mp4", alt: "Totem Fotográfico em vídeo", type: "VIDEO" },
+      { id: "m-totem-3", url: "/images/produtos/totem-3.mp4", alt: "Totem Fotográfico em vídeo 2", type: "VIDEO" },
     ],
     priceTiers: [
       {
@@ -104,7 +104,7 @@ const mockProductsList: Product[] = [
         id: "pt-totem-impresso-2h",
         durationHours: 2,
         price: 58000,
-        label: "Com impressao - 2 horas, ate 200 tirinhas",
+        label: "Com impressão - 2 horas, até 200 tirinhas",
         extraPricePerHour: 15000,
         isComboPrice: false,
       },
@@ -112,7 +112,7 @@ const mockProductsList: Product[] = [
         id: "pt-totem-impresso-3h",
         durationHours: 3,
         price: 72000,
-        label: "Com impressao - 3 horas, ate 300 tirinhas",
+        label: "Com impressão - 3 horas, até 300 tirinhas",
         extraPricePerHour: 15000,
         isComboPrice: false,
       },
@@ -154,15 +154,15 @@ const mockProductsList: Product[] = [
   },
   {
     id: "prod-combo-totem-impresso-p360",
-    name: "Combo Promocional Totem com Impressao + Plataforma 360",
-    description: "Pacote promocional com Totem Fotografico com fotos impressas e Plataforma 360 por 3 horas.",
+    name: "Combo Promocional Totem com Impressão + Plataforma 360",
+    description: "Pacote promocional com Totem Fotográfico com fotos impressas e Plataforma 360 por 3 horas.",
     category: "COMBO_PROMOCIONAL",
     extraPricePerHour: null,
     isOutsourced: false,
     priceConfirmed: true,
     isActive: true,
     media: [
-      { id: "m-combo-totem-impresso-1", url: "/images/produtos/totem-1.jpeg", alt: "Totem Fotografico com impressao", type: "IMAGE" },
+      { id: "m-combo-totem-impresso-1", url: "/images/produtos/totem-1.jpeg", alt: "Totem Fotográfico com impressão", type: "IMAGE" },
       { id: "m-combo-totem-impresso-2", url: "/images/produtos/plataforma-360.jpg", alt: "Plataforma 360", type: "IMAGE" },
     ],
     priceTiers: [
@@ -171,15 +171,15 @@ const mockProductsList: Product[] = [
   },
   {
     id: "prod-combo-totem-digital-p360",
-    name: "Combo Promocional Totem sem Impressao + Plataforma 360",
-    description: "Pacote promocional com Totem Fotografico digital, sem impressao, e Plataforma 360 por 3 horas.",
+    name: "Combo Promocional Totem sem Impressão + Plataforma 360",
+    description: "Pacote promocional com Totem Fotográfico digital, sem impressão, e Plataforma 360 por 3 horas.",
     category: "COMBO_PROMOCIONAL",
     extraPricePerHour: null,
     isOutsourced: false,
     priceConfirmed: true,
     isActive: true,
     media: [
-      { id: "m-combo-totem-digital-1", url: "/images/produtos/totem-1.jpeg", alt: "Totem Fotografico digital", type: "IMAGE" },
+      { id: "m-combo-totem-digital-1", url: "/images/produtos/totem-1.jpeg", alt: "Totem Fotográfico digital", type: "IMAGE" },
       { id: "m-combo-totem-digital-2", url: "/images/produtos/plataforma-360.jpg", alt: "Plataforma 360", type: "IMAGE" },
     ],
     priceTiers: [
