@@ -15,6 +15,7 @@ import {
   WalletCards,
 } from "lucide-react";
 
+import { HeroVideo } from "@/components/landing/hero-video";
 import { ImageCarousel } from "@/components/image-carousel";
 import { Reveal } from "@/components/reveal";
 import { QuoteButton, WhatsAppButton } from "@/components/cta";
@@ -180,16 +181,7 @@ export default async function HomePage() {
     <main className="overflow-hidden bg-white">
       {/* ---------------------------------------------------------------- HERO */}
       <section className="relative isolate flex min-h-[88vh] items-end overflow-hidden bg-fl-blue-dark text-white sm:min-h-[92vh]">
-        <video
-          className="absolute inset-0 -z-10 h-full w-full object-cover opacity-70"
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-hidden="true"
-        >
-          <source src="/images/plataforma_v2.mp4" />
-        </video>
+        <HeroVideo src="/images/plataforma_v2.mp4" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-fl-blue-dark via-fl-blue-dark/80 to-fl-blue-dark/30" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-fl-blue-dark/70 to-transparent" />
 
