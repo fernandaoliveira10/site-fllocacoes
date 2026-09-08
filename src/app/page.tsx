@@ -186,7 +186,6 @@ export default async function HomePage() {
           muted
           loop
           playsInline
-          poster="/images/hero-capa.jpg"
           aria-hidden="true"
         >
           <source src="/images/plataforma_v2.mp4" />
