@@ -335,11 +335,6 @@ export default async function HomePage() {
                     <h3 className="mt-2 font-display text-2xl font-bold text-fl-blue-dark">
                       Economize combinando atrações por 3 horas
                     </h3>
-                    <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm font-semibold text-amber-950">
-                      {comboProducts.map((product) => (
-                        <span key={product.id}>{product.name.replace("Combo Promocional ", "")}</span>
-                      ))}
-                    </div>
                   </div>
                 </div>
                 <Link
