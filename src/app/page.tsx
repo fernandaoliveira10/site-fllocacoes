@@ -198,8 +198,7 @@ export default async function HomePage() {
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-8 text-white/80 sm:text-lg">
-              Plataforma 360, cama elástica, fotografia profissional e totem fotográfico para aniversários, casamentos,
-              confraternizações e eventos corporativos — com estrutura completa e preço claro.
+              Plataforma 360, totem fotográfico e cama elástica — estrutura completa para o seu evento!
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
