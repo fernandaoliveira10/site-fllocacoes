@@ -265,13 +265,13 @@ export function BookingExperience() {
     const isSelected = Boolean(selected);
     const firstTier = product.priceTiers[0];
     const productName = isCombo ? getComboDisplayName(product.name) : product.name;
-    const showTierSelector = !isCombo || product.priceTiers.length > 1;
+    const showTierSelector = isSelected && (!isCombo || product.priceTiers.length > 1);
 
     return (
       <div
         key={product.id}
         className={cn(
-          "rounded-2xl border p-5 transition",
+          "rounded-2xl border p-4 transition",
           isCombo ? "border-amber-200 bg-amber-50/70" : "border-fl-gray-200 bg-white",
           isSelected &&
             (isCombo
@@ -279,33 +279,31 @@ export function BookingExperience() {
               : "border-fl-blue bg-fl-blue-50 shadow-soft"),
         )}
       >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h4 className="font-display text-lg font-bold text-fl-blue-dark">{productName}</h4>
-            {isCombo
-              ? firstTier && (
-                  <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-amber-900">
-                    <span>{firstTier.label ?? `${firstTier.durationHours}h`}</span>
-                    <span className="font-bold tabular-nums text-fl-blue-dark">{formatCurrency(firstTier.price)}</span>
-                  </p>
-                )
-              : (
-                  <>
-                    <p className="text-sm text-fl-gray-500">
-                      {productCategoryLabels[product.category as ProductCategory] ??
-                        product.category.replace(/_/g, " ")}
-                    </p>
-                    {product.description && (
-                      <p className="mt-1 text-sm leading-5 text-fl-gray-600">{product.description}</p>
-                    )}
-                  </>
-                )}
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h4 className="font-display text-base font-bold text-fl-blue-dark sm:text-lg">{productName}</h4>
+            <p className={cn("mt-0.5 text-xs sm:text-sm", isCombo ? "text-amber-900" : "text-fl-gray-500")}>
+              <span>
+                {isCombo
+                  ? firstTier?.label ?? `${firstTier?.durationHours ?? ""}h`
+                  : productCategoryLabels[product.category as ProductCategory] ??
+                    product.category.replace(/_/g, " ")}
+              </span>
+              {firstTier && (
+                <>
+                  <span className="mx-1.5 text-fl-gray-300">•</span>
+                  <span className="font-bold tabular-nums text-fl-blue-dark">
+                    {isCombo ? formatCurrency(firstTier.price) : `a partir de ${formatCurrency(firstTier.price)}`}
+                  </span>
+                </>
+              )}
+            </p>
           </div>
           <button
             type="button"
             onClick={() => toggleProduct(product)}
             className={cn(
-              "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transition",
+              "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold shadow-sm transition sm:px-4",
               isSelected
                 ? "border-green-400 bg-green-50 text-green-700"
                 : "border-fl-blue bg-fl-blue text-white shadow-fl-blue/20 hover:bg-fl-blue-dark",
@@ -318,16 +316,19 @@ export function BookingExperience() {
           </button>
         </div>
 
+        {!isCombo && product.description && (
+          <p className="mt-2 hidden text-sm leading-5 text-fl-gray-600 sm:block">{product.description}</p>
+        )}
+
         {showTierSelector && (
-          <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             {product.priceTiers.map((tier) => (
               <button
                 key={tier.id}
                 type="button"
-                disabled={!isSelected}
                 onClick={() => setProductTier(product.id, tier.id)}
                 className={cn(
-                  "rounded-lg border px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-40",
+                  "rounded-lg border px-3 py-1.5 text-xs font-medium transition",
                   selected?.tierId === tier.id
                     ? "border-fl-blue bg-fl-blue text-white"
                     : "border-fl-gray-300 text-fl-gray-600 hover:border-fl-blue hover:text-fl-blue",
@@ -340,7 +341,7 @@ export function BookingExperience() {
         )}
 
         {selected && (
-          <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-fl-gray-200/70 pt-4">
+          <div className="mt-3 flex flex-wrap items-center gap-4 border-t border-fl-gray-200/70 pt-3">
             <div className="flex items-center gap-2">
               <span className="text-xs text-fl-gray-500">Qtd:</span>
               <button
