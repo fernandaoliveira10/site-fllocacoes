@@ -49,15 +49,15 @@ describe("calculateBookingPricing", () => {
   it("does not apply package discount over promotional combo prices", () => {
     const pricing = calculateBookingPricing({
       items: [
-        { productId: "prod-combo-p360-cama-monitor", price: 52000, quantity: 1, isComboPrice: true },
+        { productId: "prod-combo-totem-digital-p360", price: 75000, quantity: 1, isComboPrice: true },
         { productId: "prod-fotografia", price: 30000, quantity: 1 },
       ],
       extraHours: 0,
     });
 
-    expect(pricing.subtotalAmount).toBe(82000);
+    expect(pricing.subtotalAmount).toBe(105000);
     expect(pricing.discountAmount).toBe(0);
-    expect(pricing.totalAmount).toBe(82000);
-    expect(pricing.depositAmount).toBe(24600);
+    expect(pricing.totalAmount).toBe(105000);
+    expect(pricing.depositAmount).toBe(31500);
   });
 });
